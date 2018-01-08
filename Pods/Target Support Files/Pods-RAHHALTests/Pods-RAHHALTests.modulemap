@@ -1,0 +1,6 @@
+framework module Pods_RAHHALTests {
+  umbrella header "Pods-RAHHALTests-umbrella.h"
+
+  export *
+  module * { export * }
+}

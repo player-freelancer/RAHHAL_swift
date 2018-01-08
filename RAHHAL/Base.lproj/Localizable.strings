@@ -1,0 +1,34 @@
+/* 
+  Localizable.strings
+  RAHHAL
+
+  Created by RAJ on 05/12/17.
+  Copyright © 2017 RAJ. All rights reserved.
+*/
+
+"Mobile No." = "Mobile No.";
+"Login" = "Login";
+"Don't have an account yet ? Sign up." = "Don't have an account yet ? Sign up.";
+"Back" = "Back";
+"Please wait while we verify your number" = "Please wait while we verify your number";
+"Enter your code" = "Enter your code";
+"Didn't get the code? Resend" = "Didn't get the code? Resend";
+"Verify" = "Verify";
+"seconds" = "seconds";
+"REGISTRATION" = "REGISTRATION";
+"Last Name" = "Last Name";
+"First Name" = "First Name";
+"Terms & Conditions." = "Terms & Conditions.";
+"Submit" = "Submit";
+"OK" = "OK";
+"Please fill all the fields." = "Please fill all the fields.";
+"First name cannot be left blank." = "First name cannot be left blank.";
+"Last name cannot be left blank." = "Last name cannot be left blank.";
+"Mobile No. cannot be left blank." = "Mobile No. cannot be left blank.";
+"Mobile No. entered is incorrect." = "Mobile No. entered is incorrect.";
+"OTP entered is incorrect." = "OTP entered is incorrect.";
+"Error" = "Error";
+"Warning" = "Warning";
+"You must agree with the terms and conditions." = "You must agree with the terms and conditions.";
+"Something went wrong, please try again" = "Something went wrong, please try again";
+"Please check your internet connection" = "Please check your internet connection";

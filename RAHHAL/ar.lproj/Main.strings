@@ -1,0 +1,54 @@
+
+/* Class = "UILabel"; text = "Seconds"; ObjectID = "5Ii-Xi-8VW"; */
+"5Ii-Xi-8VW.text" = "ثواني";
+
+/* Class = "UILabel"; text = "Enter your code"; ObjectID = "6qh-4g-3Vl"; */
+"6qh-4g-3Vl.text" = "أدخل رقم الكود المرسل إلیك";
+
+/* Class = "UIButton"; normalTitle = "Term & Condition"; ObjectID = "HnQ-Mv-6A5"; */
+"HnQ-Mv-6A5.normalTitle" = "الأحكام والشروط";
+
+/* Class = "UITextField"; placeholder = "Mobile number"; ObjectID = "J4C-Dv-RPa"; */
+"J4C-Dv-RPa.placeholder" = "رقم الموبایل";
+
+/* Class = "UITextField"; placeholder = "First Name"; ObjectID = "LVD-al-KTR"; */
+"LVD-al-KTR.placeholder" = "الأسم الأول";
+
+/* Class = "UIButton"; normalTitle = "Submit"; ObjectID = "VLP-bn-cuX"; */
+"VLP-bn-cuX.normalTitle" = "أرسل";
+
+/* Class = "UITextField"; placeholder = "Last Name"; ObjectID = "WSN-yH-cft"; */
+"WSN-yH-cft.placeholder" = "أسم العائلة";
+
+/* Class = "UILabel"; text = "Didn't got the code? Resend"; ObjectID = "WzK-hu-a9c"; */
+"WzK-hu-a9c.text" = "لم تصل رسالة التحقق؟ أعد الإرسال";
+
+/* Class = "UITextField"; placeholder = "Mobile no."; ObjectID = "YYu-rt-2kR"; */
+"YYu-rt-2kR.placeholder" = "رقم الموبایل";
+
+/* Class = "UIButton"; normalTitle = "Back"; ObjectID = "baM-Mj-Cij"; */
+"baM-Mj-Cij.normalTitle" = "رجوع";
+
+/* Class = "UILabel"; text = "REGISTRASION"; ObjectID = "bsN-h2-fCT"; */
+"bsN-h2-fCT.text" = "التسجیل";
+
+/* Class = "UIButton"; normalTitle = "Login"; ObjectID = "dsk-0B-MqG"; */
+"dsk-0B-MqG.normalTitle" = "الدخول";
+
+/* Class = "UILabel"; text = "60"; ObjectID = "ehv-Gq-oae"; */
+"ehv-Gq-oae.text" = "60";
+
+/* Class = "UIButton"; normalTitle = "Back"; ObjectID = "fVi-Tc-kSp"; */
+"fVi-Tc-kSp.normalTitle" = "رجوع";
+
+/* Class = "UILabel"; text = "Don't have account yet? Sign up"; ObjectID = "lQV-Zm-7lY"; */
+"lQV-Zm-7lY.text" = "لیس لدیك حساب؟ سجل الآن";
+
+/* Class = "UIButton"; normalTitle = "Verify"; ObjectID = "mpx-ec-HGr"; */
+"mpx-ec-HGr.normalTitle" = "تحقق";
+
+/* Class = "UILabel"; text = "+XX-XXX-XXX-XXXX"; ObjectID = "uzf-qi-gvU"; */
+"uzf-qi-gvU.text" = "+XX-XXX-XXX-XXXX";
+
+/* Class = "UILabel"; text = "Please wait while we verify your number"; ObjectID = "vXo-B3-dum"; */
+"vXo-B3-dum.text" = "الرجاء الانتظار حتى یتم إرسال كود التحقق إلى رقمك";

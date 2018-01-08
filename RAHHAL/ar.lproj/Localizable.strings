@@ -1,0 +1,33 @@
+/* 
+  Localizable.strings
+  RAHHAL
+
+  Created by RAJ on 05/12/17.
+  Copyright © 2017 RAJ. All rights reserved.
+*/
+"Mobile No." = "رقم الموبایل";
+"Login" = "الدخول";
+"Don't have an account yet ? Sign up." = "لیس لدیك حساب؟ سجل الآن";
+"Back" = "رجوع";
+"Please wait while we verify your number" = "الرجاء الانتظار حتى یتم إرسال كود التحقق إلى رقمك";
+"Enter your code" = "أدخل رقم الكود المرسل إلیك";
+"Didn't get the code? Resend" = "لم تصل رسالة التحقق؟ أعد الإرسال";
+"Verify" = "تحقق";
+"seconds" = "ثواني";
+"REGISTRATION" = "التسجیل";
+"Last Name" = "أسم العائلة";
+"First Name" = "الأسم الأول";
+"Terms & Conditions." = "الأحكام والشروط";
+"Submit" = "أرسل";
+"OK" = "موافق";
+"Please fill all the fields." = "الرجاء إكمال جمیع الخانات";
+"First name cannot be left blank." = "الأسم الأول لا یمكن أن یكون فارغا";
+"Last name cannot be left blank." = "الأسم الأخیر لا یمكن أن یكون فارغا";
+"Mobile No. cannot be left blank." = "رقم الموبایل لا یمكن أن یكون فارغا";
+"Mobile No. entered is incorrect." = "رقم الموبایل المدخل غیر صحیح";
+"OTP entered is incorrect." = "رقم التحقق المدخل غیر صحیح";
+"Error" = "خطأ";
+"Warning" = "تحذير";
+"You must agree with the terms and conditions." = "يجب أن تتفق مع الشروط والأحكام.";
+"Something went wrong, please try again" = "حدث خطأ ما. أعد المحاولة من فضلك";
+"Please check your internet connection" = "الرجاء التحقق من اتصال الانترنت الخاص بك";
