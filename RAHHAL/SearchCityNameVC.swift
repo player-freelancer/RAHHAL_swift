@@ -11,8 +11,8 @@ protocol SearchCityNameVCDelegate {
     func getSelectedCityName(sytCityName: String, type: String, vc: UIViewController)
 }
 
-import UIKit
 
+import UIKit
 class SearchCityNameVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
 
     @IBOutlet var imgMagnifier: UIImageView!
@@ -32,6 +32,7 @@ class SearchCityNameVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     var strSearch = String()
     
     var searchType = String()
+    
     
     //MARK: - VC LifeCycle
     override func viewDidLoad() {
@@ -223,6 +224,14 @@ class SearchCityNameVC: UIViewController, UITableViewDelegate, UITableViewDataSo
                             self.tblSearchResult.reloadData()
                         }
                     }
+                }
+                else {
+                    
+                    self.lblNoResultFound.isHidden = false
+                    
+                    self.tblSearchResult.isHidden = true
+                    
+                    self.tblSearchResult.reloadData()
                 }
             }
             

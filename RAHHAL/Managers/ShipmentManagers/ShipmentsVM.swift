@@ -111,7 +111,15 @@ class ShipmentsVM: NSObject {
     
     func searchCity(strKeyword: String, completionHandler:@escaping (_ dict :NSDictionary) -> Void, failure:@escaping (_ error :String) -> Void) -> Void{
         
-        WebService.sharedInstance.getMethedWithoutParams("search/city?keyword=\(strKeyword)", completionHandler: { (dictResponse) in
+        var newKeyWord = strKeyword
+        
+        if let percentEscapedString = strKeyword.addingPercentEncoding(withAllowedCharacters: NSCharacterSet.urlQueryAllowed) {
+            
+            newKeyWord = percentEscapedString
+        }
+        
+        
+        WebService.sharedInstance.getMethedWithoutParams("search/city?keyword=\(newKeyWord)", completionHandler: { (dictResponse) in
             
             completionHandler(dictResponse)
         }, failure: { (errorCode) in

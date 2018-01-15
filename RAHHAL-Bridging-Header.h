@@ -13,6 +13,7 @@
 #import "FRHyperLabel.h"
 #import "UIView+Toast.h"
 #import "MBProgressHUD.h"
+#import "TestFairy.h"
 
 
 #endif /* RAHHAL_Bridging_Header_h */

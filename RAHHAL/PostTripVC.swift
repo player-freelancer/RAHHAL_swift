@@ -9,7 +9,7 @@
 import UIKit
 
 class PostTripVC: UIViewController, UIPopoverPresentationControllerDelegate, PopOverVCDelegates, UITextFieldDelegate, UITextViewDelegate, ViewDayNDatePickerDelegates, AddressViewControllerDelegate, SearchCityNameVCDelegate {
-
+    
     @IBOutlet var svMain: UIScrollView!
     
     @IBOutlet var viewContainer: UIView!
@@ -94,28 +94,28 @@ class PostTripVC: UIViewController, UIPopoverPresentationControllerDelegate, Pop
         
         if dictTripInfo.isEmpty {
             
-        if isOnDemandShipment {
+            if isOnDemandShipment {
+                
+                viewShipmentType.isHidden = true
+                dictTripInfo["type"] = "Within City"
+            }
+            else {
+                
+                viewSelectCity.isHidden = true
+                dictTripInfo["type"] = ""
+            }
             
-            viewShipmentType.isHidden = true
-            dictTripInfo["type"] = "Within City"
-        }
-        else {
+            //        dictTripInfo["title"] = ""
+            dictTripInfo["from_location"] = ""
+            dictTripInfo["to_location"] = ""
+            dictTripInfo["weight"] = ""
+            dictTripInfo["departure"] = ""
+//            dictTripInfo["arrival"] = ""
+            //        dictTripInfo["fees"] = ""
+            //        dictTripInfo["pictureIds"] = ""
+            dictTripInfo["city_name"] = ""
+            dictTripInfo["note"] = ""
             
-            viewSelectCity.isHidden = true
-            dictTripInfo["type"] = ""
-        }
-        
-//        dictTripInfo["title"] = ""
-        dictTripInfo["from_location"] = ""
-        dictTripInfo["to_location"] = ""
-        dictTripInfo["weight"] = ""
-        dictTripInfo["departure"] = ""
-        dictTripInfo["arrival"] = ""
-//        dictTripInfo["fees"] = ""
-//        dictTripInfo["pictureIds"] = ""
-        dictTripInfo["city_name"] = ""
-        dictTripInfo["note"] = ""
-        
         }
         else {
             
@@ -123,7 +123,7 @@ class PostTripVC: UIViewController, UIPopoverPresentationControllerDelegate, Pop
             viewShipmentType.isUserInteractionEnabled = false
             
             let startDate = TimeStatus.getDate(isApplyTimeZone: false, strDate: dictTripInfo["departure"]!, oldFormatter: "yyyy-MM-dd hh-mm-ss", newFormat: "yyyy-MM-dd")
-let endDate = TimeStatus.getDate(isApplyTimeZone: false, strDate: dictTripInfo["arrival"]!, oldFormatter: "yyyy-MM-dd hh-mm-ss", newFormat: "yyyy-MM-dd")
+//            let endDate = TimeStatus.getDate(isApplyTimeZone: false, strDate: dictTripInfo["arrival"]!, oldFormatter: "yyyy-MM-dd hh-mm-ss", newFormat: "yyyy-MM-dd")
             
             var dictOldTrip = [String: String]()
             dictOldTrip["type"] = dictTripInfo["type"]
@@ -131,7 +131,7 @@ let endDate = TimeStatus.getDate(isApplyTimeZone: false, strDate: dictTripInfo["
             dictOldTrip["to_location"] = dictTripInfo["to_location"]
             dictOldTrip["weight"] = dictTripInfo["weight"]
             dictOldTrip["departure"] = startDate
-            dictOldTrip["arrival"] = endDate
+//            dictOldTrip["arrival"] = ""
             dictOldTrip["city_name"] = dictTripInfo["city_name"]
             dictOldTrip["note"] = dictTripInfo["note"]
             dictOldTrip["tripId"] = dictTripInfo["id"]
@@ -147,7 +147,7 @@ let endDate = TimeStatus.getDate(isApplyTimeZone: false, strDate: dictTripInfo["
             
             btnStartDate.setTitle(startDate, for: .normal)
             
-            btnEndDate.setTitle(endDate, for: .normal)
+//            btnEndDate.setTitle(endDate, for: .normal)
             
             txtWeight.text =  dictTripInfo["weight"]
             
@@ -163,10 +163,12 @@ let endDate = TimeStatus.getDate(isApplyTimeZone: false, strDate: dictTripInfo["
     
     
     override func viewDidAppear(_ animated: Bool) {
+        
         super.viewDidAppear(animated)
         
         frameViewContainer = viewContainer.frame
     }
+    
     
     override func didReceiveMemoryWarning() {
         
@@ -177,12 +179,12 @@ let endDate = TimeStatus.getDate(isApplyTimeZone: false, strDate: dictTripInfo["
     //MARK:- Navigation
     func navigationView() -> Void {
         
-//        if isOnDemandShipment {
-//            self.navigationItem.navTitle(title: "Post Express Delivery")
-//        }
-//        else {
-//            self.navigationItem.navTitle(title: "Post Shipment")
-//        }
+        //        if isOnDemandShipment {
+        //            self.navigationItem.navTitle(title: "Post Express Delivery")
+        //        }
+        //        else {
+        //            self.navigationItem.navTitle(title: "Post Shipment")
+        //        }
         if tripType == "update" {
             
             self.navigationItem.navTitle(title: "Update Trip")
@@ -221,7 +223,7 @@ let endDate = TimeStatus.getDate(isApplyTimeZone: false, strDate: dictTripInfo["
     
     // MARK: - SearchCityNameVCDelegate
     func getSelectedCityName(sytCityName: String, type: String, vc: UIViewController) {
-    
+        
         vc.navigationController?.popViewController(animated: true)
         
         if type == "selectCity" {
@@ -252,7 +254,7 @@ let endDate = TimeStatus.getDate(isApplyTimeZone: false, strDate: dictTripInfo["
         
         self.view.endEditing(true)
         
-//        let point = sender.convert(CGPoint.zero, to: self.view)
+        //        let point = sender.convert(CGPoint.zero, to: self.view)
         
         let popController = PopOverVC(nibName: "PopOverVC", bundle: nil)
         
@@ -402,21 +404,21 @@ let endDate = TimeStatus.getDate(isApplyTimeZone: false, strDate: dictTripInfo["
         }
         else {
             
-            if dictTripInfo["departure"] == "" {
-                
-                UIAlertController.Alert(title: "", msg: "Please select Start Date", vc: self)
-                
-                return
-            }
-            
-            if dictTripInfo["arrival"] == "" {
-                
-                dateSelected = dictTripInfo["departure"] ?? ""
-            }
-            else {
-                
-                dateSelected = dictTripInfo["arrival"] ?? ""
-            }
+//            if dictTripInfo["departure"] == "" {
+//
+//                UIAlertController.Alert(title: "", msg: "Please select Start Date", vc: self)
+//
+//                return
+//            }
+//
+//            if dictTripInfo["arrival"] == "" {
+//
+//                dateSelected = dictTripInfo["departure"] ?? ""
+//            }
+//            else {
+//
+//                dateSelected = dictTripInfo["arrival"] ?? ""
+//            }
         }
         
         viewDayNDatePicker.setOldDate(oldDate: dateSelected, dateType: dateType)
@@ -428,7 +430,24 @@ let endDate = TimeStatus.getDate(isApplyTimeZone: false, strDate: dictTripInfo["
     
     
     //MARK:- ViewDayNDatePicker Dalegates
-    func btnCancelActionDatePickerView() -> Void {
+    func btnCancelActionDatePickerView(dateType: String) -> Void {
+        
+        if dateType == "start" {
+            dictTripInfo["departure"] = ""
+            btnStartDate.setTitle("Start Date", for: .normal)
+//            dictTripInfo["arrival"] = ""
+//            btnEndDate.setTitle("End Date", for: .normal)
+        }
+        else if dateType == "end" {
+//            dictTripInfo["arrival"] = ""
+//            btnEndDate.setTitle("End Date", for: .normal)
+        }
+        
+        self.hideDatePickerView()
+    }
+    
+    
+    func hideDatePickerView() -> Void {
         
         if viewDayNDatePicker != nil {
             
@@ -437,13 +456,14 @@ let endDate = TimeStatus.getDate(isApplyTimeZone: false, strDate: dictTripInfo["
     }
     
     
+    
     func btnDoneActionDatePickerView(strDate: String, strDateAndTime: String, dateType: String) -> Void {
         
         let dateFormatter = DateFormatter()
         
         dateFormatter.dateFormat = "yyyy-MM-d"
         
-        self.btnCancelActionDatePickerView()
+        self.hideDatePickerView()
         
         let strOrderDeliveryDate = strDate
         
@@ -462,12 +482,12 @@ let endDate = TimeStatus.getDate(isApplyTimeZone: false, strDate: dictTripInfo["
             
             btnStartDate.setTitle(strOrderDeliveryDate, for: .normal)
             
-            dictTripInfo["arrival"] = ""
-            btnEndDate.setTitle("End Date", for: .normal)
+//            dictTripInfo["arrival"] = ""
+//            btnEndDate.setTitle("End Date", for: .normal)
         }
         else if dateType == "end" {
-            dictTripInfo["arrival"] = strOrderDeliveryDate
-            btnEndDate.setTitle(strOrderDeliveryDate, for: .normal)
+//            dictTripInfo["arrival"] = strOrderDeliveryDate
+//            btnEndDate.setTitle(strOrderDeliveryDate, for: .normal)
         }
     }
     
@@ -485,7 +505,7 @@ let endDate = TimeStatus.getDate(isApplyTimeZone: false, strDate: dictTripInfo["
     func getPopOverValue(strDate: String, vc: UIViewController) {
         
         print(strDate)
-//        self.setViewContents(type: strDate)
+        //        self.setViewContents(type: strDate)
         dictTripInfo["type"] = strDate
         btnShipmentType.setTitle(strDate, for: .normal)
         vc.dismiss(animated: true, completion: nil)
@@ -523,9 +543,9 @@ let endDate = TimeStatus.getDate(isApplyTimeZone: false, strDate: dictTripInfo["
             viewDesc.frame = CGRect(x: viewDesc.frame.origin.x, y: yAiz, width: viewDesc.frame.size.width, height: viewDesc.frame.size.height)
             
             
-//            viewContainer.autoresizingMask = [.flexibleRightMargin, .flexibleLeftMargin, .flexibleBottomMargin]
-//
-//            viewContainer.layoutIfNeeded()
+            //            viewContainer.autoresizingMask = [.flexibleRightMargin, .flexibleLeftMargin, .flexibleBottomMargin]
+            //
+            //            viewContainer.layoutIfNeeded()
         }
         else {
             
@@ -587,40 +607,40 @@ let endDate = TimeStatus.getDate(isApplyTimeZone: false, strDate: dictTripInfo["
     
     public func textFieldDidBeginEditing(_ textField: UITextField) {
         
-//        if txtFrom == textField {
-//            if isOnDemandShipment {
-//                let CVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "selectUserAddressViewController") as! selectUserAddressViewController
-//
-//                CVC.selectAddressStr = dictTripInfo["city_name"] as! NSString
-//
-//                CVC.delegate = self
-//                CVC.addressType = "from"
-//                self .present(CVC, animated: true, completion: nil)
-//            }
-//        }
-//        else if txtTo == textField {
-//
-//            if isOnDemandShipment {
-//                let CVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "selectUserAddressViewController") as! selectUserAddressViewController
-//
-//                CVC.selectAddressStr = dictTripInfo["city_name"] as! NSString
-//                CVC.delegate = self
-//                CVC.addressType = "to"
-//                self .present(CVC, animated: true, completion: nil)
-//            }
-//        }
-//        else if txtSelectCity == textField {
-//
-//        }
-//        else
-//        if txtWeight == textField {
-//
-//            adjustFrame(yAxiz: -50)
-//        }
-//        else if txtPrice == textField {
-//
-//            adjustFrame(yAxiz: -50)
-//        }
+        //        if txtFrom == textField {
+        //            if isOnDemandShipment {
+        //                let CVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "selectUserAddressViewController") as! selectUserAddressViewController
+        //
+        //                CVC.selectAddressStr = dictTripInfo["city_name"] as! NSString
+        //
+        //                CVC.delegate = self
+        //                CVC.addressType = "from"
+        //                self .present(CVC, animated: true, completion: nil)
+        //            }
+        //        }
+        //        else if txtTo == textField {
+        //
+        //            if isOnDemandShipment {
+        //                let CVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "selectUserAddressViewController") as! selectUserAddressViewController
+        //
+        //                CVC.selectAddressStr = dictTripInfo["city_name"] as! NSString
+        //                CVC.delegate = self
+        //                CVC.addressType = "to"
+        //                self .present(CVC, animated: true, completion: nil)
+        //            }
+        //        }
+        //        else if txtSelectCity == textField {
+        //
+        //        }
+        //        else
+        //        if txtWeight == textField {
+        //
+        //            adjustFrame(yAxiz: -50)
+        //        }
+        //        else if txtPrice == textField {
+        //
+        //            adjustFrame(yAxiz: -50)
+        //        }
     }
     
     
@@ -629,26 +649,27 @@ let endDate = TimeStatus.getDate(isApplyTimeZone: false, strDate: dictTripInfo["
         if endEditingNow == "yes" {
             
             endEditingNow = ""
+            self.startPoint()
             return
         }
         
-//        if txtSelectCity == textField {
-//
-//        }
-//        else if txtFrom == textField {
-//
-//        }
-//        else if txtTo == textField {
-//
-//        }
-//        else if txtWeight == textField {
-//            
-//            txtPrice.becomeFirstResponder()
-//        }
-//        else if txtPrice == textField {
-//            
-//            self.startPoint()
-//        }
+        //        if txtSelectCity == textField {
+        //
+        //        }
+        //        else if txtFrom == textField {
+        //
+        //        }
+        //        else if txtTo == textField {
+        //
+        //        }
+        //        else if txtWeight == textField {
+        //
+        //            txtPrice.becomeFirstResponder()
+        //        }
+        //        else if txtPrice == textField {
+        //
+        //            self.startPoint()
+        //        }
     }
     
     
@@ -659,20 +680,22 @@ let endDate = TimeStatus.getDate(isApplyTimeZone: false, strDate: dictTripInfo["
         let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
         
         if txtWeight == textField {
-            
+            if updatedText.count < 4 {
             dictTripInfo["weight"] = updatedText
+            }
         }
         else if txtPrice == textField {
-            
+            if updatedText.count < 5 {
             dictTripInfo["fees"] = updatedText
+            }
         }
         
-//        if txtFrom == textField || txtTo == textField || txtSelectCity == textField {
-//
-//            NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(getHintsFromTextField), object: textField)
-//
-//            self.perform(#selector(getHintsFromTextField), with: textField, afterDelay: 0.5)
-//        }
+        //        if txtFrom == textField || txtTo == textField || txtSelectCity == textField {
+        //
+        //            NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(getHintsFromTextField), object: textField)
+        //
+        //            self.perform(#selector(getHintsFromTextField), with: textField, afterDelay: 0.5)
+        //        }
         
         if txtWeight == textField {
             
@@ -680,7 +703,7 @@ let endDate = TimeStatus.getDate(isApplyTimeZone: false, strDate: dictTripInfo["
         }
         else if txtPrice == textField {
             
-            return updatedText.count <= 8
+            return updatedText.count <= 5
         }
         return true
     }
@@ -752,7 +775,7 @@ let endDate = TimeStatus.getDate(isApplyTimeZone: false, strDate: dictTripInfo["
     
     func checkValidationAndPostShipment() -> Void {
         
-//        let title = dictTripInfo["title"]
+        //        let title = dictTripInfo["title"]
         let type = dictTripInfo["type"]
         let city = dictTripInfo["city_name"]
         let from = dictTripInfo["from_location"]
@@ -760,7 +783,7 @@ let endDate = TimeStatus.getDate(isApplyTimeZone: false, strDate: dictTripInfo["
         let weight = dictTripInfo["weight"]
         let fees = dictTripInfo["fees"]
         let startDate = dictTripInfo["departure"]
-        let endDate = dictTripInfo["arrival"]
+//        let endDate = dictTripInfo["arrival"]
         //        let pic = dictTripInfo["pictureIds"]
         
         //        if (pic?.isEmpty)! {
@@ -770,12 +793,12 @@ let endDate = TimeStatus.getDate(isApplyTimeZone: false, strDate: dictTripInfo["
         
         let note = dictTripInfo["note"]
         
-//        guard !(title?.Trim().isEmpty)! else {
-//
-//            UIAlertController.Alert(title: "", msg: "Title cannot be left blank.", vc: self)
-//
-//            return
-//        }
+        //        guard !(title?.Trim().isEmpty)! else {
+        //
+        //            UIAlertController.Alert(title: "", msg: "Title cannot be left blank.", vc: self)
+        //
+        //            return
+        //        }
         
         if isOnDemandShipment {
             
@@ -814,11 +837,11 @@ let endDate = TimeStatus.getDate(isApplyTimeZone: false, strDate: dictTripInfo["
             return
         }
         
-//        guard !(fees?.Trim().isEmpty)! else {
-//
-//            UIAlertController.Alert(title: "", msg: "Currency cannot be left blank.", vc: self)
-//            return
-//        }
+        //        guard !(fees?.Trim().isEmpty)! else {
+        //
+        //            UIAlertController.Alert(title: "", msg: "Currency cannot be left blank.", vc: self)
+        //            return
+        //        }
         
         guard !(startDate?.Trim().isEmpty)! else {
             
@@ -826,60 +849,69 @@ let endDate = TimeStatus.getDate(isApplyTimeZone: false, strDate: dictTripInfo["
             return
         }
         
-        guard !(endDate?.Trim().isEmpty)! else {
+        //        guard !(endDate?.Trim().isEmpty)! else {
+        //
+        //            UIAlertController.Alert(title: "", msg: "End date cannot be left blank.", vc: self)
+        //            return
+        //        }
+        
+        guard from?.Trim() != to?.Trim()  else {
             
-            UIAlertController.Alert(title: "", msg: "End date cannot be left blank.", vc: self)
+            UIAlertController.Alert(title: "", msg: "From & To cannot match with each other.", vc: self)
             return
         }
         
         
+        
+        
+        
         /*
-        if isOnDemandShipment {
-            
-            
-            let arrMySelectedCity = arrSelectCity.filter({ ($0 == city!) })
-            
-            if arrMySelectedCity.isEmpty {
-                
-                UIAlertController.Alert(title: "", msg: "Please fill valid City Name", vc: self)
-                return
-            }
-            //            else {
-            //
-            //                dictTripInfo["city_name"] = String(format: "%@ %@", city!, arrMySelectedCity[0]["country"] as! String )
-            //
-            //            }
-        }
-        else {
-            
-            let arrMySelectedToCity = arrToCity.filter({ ($0 == to!) })
-            
-            if arrMySelectedToCity.isEmpty {
-                
-                UIAlertController.Alert(title: "", msg: "Please fill valid To Address", vc: self)
-                return
-            }
-            //            else {
-            //
-            //                dictTripInfo["drop_location"] = String(format: "%@ %@", to!, arrMySelectedToCity[0]["country"] as! String)
-            //            }
-            
-            let arrMySelectedFromCity = arrFromCity.filter({ ($0 == from!) })
-            
-            if arrMySelectedFromCity.isEmpty {
-                
-                UIAlertController.Alert(title: "", msg: "Please fill valid From Address", vc: self)
-                return
-            }
-            //            else {
-            //                dictTripInfo["pickup_location"] = String(format: "%@ %@", from!, arrMySelectedFromCity[0]["country"] as! String )
-            //            }
-        }
-        */
+         if isOnDemandShipment {
+         
+         
+         let arrMySelectedCity = arrSelectCity.filter({ ($0 == city!) })
+         
+         if arrMySelectedCity.isEmpty {
+         
+         UIAlertController.Alert(title: "", msg: "Please fill valid City Name", vc: self)
+         return
+         }
+         //            else {
+         //
+         //                dictTripInfo["city_name"] = String(format: "%@ %@", city!, arrMySelectedCity[0]["country"] as! String )
+         //
+         //            }
+         }
+         else {
+         
+         let arrMySelectedToCity = arrToCity.filter({ ($0 == to!) })
+         
+         if arrMySelectedToCity.isEmpty {
+         
+         UIAlertController.Alert(title: "", msg: "Please fill valid To Address", vc: self)
+         return
+         }
+         //            else {
+         //
+         //                dictTripInfo["drop_location"] = String(format: "%@ %@", to!, arrMySelectedToCity[0]["country"] as! String)
+         //            }
+         
+         let arrMySelectedFromCity = arrFromCity.filter({ ($0 == from!) })
+         
+         if arrMySelectedFromCity.isEmpty {
+         
+         UIAlertController.Alert(title: "", msg: "Please fill valid From Address", vc: self)
+         return
+         }
+         //            else {
+         //                dictTripInfo["pickup_location"] = String(format: "%@ %@", from!, arrMySelectedFromCity[0]["country"] as! String )
+         //            }
+         }
+         */
         
         dictTripInfo["departure"] = String(format: "%@ 00:00:00", startDate!)
         
-        dictTripInfo["arrival"] = String(format: "%@ 00:00:00", endDate!)
+//        dictTripInfo["arrival"] = String(format: "%@ 00:00:00", endDate!)
         
         
         print(dictTripInfo)
@@ -890,7 +922,7 @@ let endDate = TimeStatus.getDate(isApplyTimeZone: false, strDate: dictTripInfo["
         }
         else if tripType == "search" {
             
-//            self.createNewTrip()
+            //            self.createNewTrip()
             UIAlertController.Alert(title: "", msg: "Coming soon", vc: self)
         }
         else {
@@ -898,7 +930,7 @@ let endDate = TimeStatus.getDate(isApplyTimeZone: false, strDate: dictTripInfo["
             self.createNewTrip()
         }
     }
- 
+    
     
     func createNewTrip() -> Void {
         
@@ -984,5 +1016,5 @@ let endDate = TimeStatus.getDate(isApplyTimeZone: false, strDate: dictTripInfo["
             }
         })
     }
-
+    
 }

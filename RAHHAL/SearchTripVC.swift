@@ -345,7 +345,24 @@ class SearchTripVC: UIViewController, UIPopoverPresentationControllerDelegate, P
     
     
     //MARK:- ViewDayNDatePicker Dalegates
-    func btnCancelActionDatePickerView() -> Void {
+    func btnCancelActionDatePickerView(dateType: String) -> Void {
+        
+        if dateType == "start" {
+            dictTripInfo["departure"] = ""
+            btnStartDate.setTitle("Start Date", for: .normal)
+            dictTripInfo["arrival"] = ""
+            btnEndDate.setTitle("End Date", for: .normal)
+        }
+        else if dateType == "end" {
+            dictTripInfo["arrival"] = ""
+            btnEndDate.setTitle("End Date", for: .normal)
+        }
+        
+        self.hideDatePickerView()
+    }
+    
+    
+    func hideDatePickerView() -> Void {
         
         if viewDayNDatePicker != nil {
             
@@ -360,7 +377,7 @@ class SearchTripVC: UIViewController, UIPopoverPresentationControllerDelegate, P
         
         dateFormatter.dateFormat = "yyyy-MM-d"
         
-        self.btnCancelActionDatePickerView()
+        self.hideDatePickerView()
         
         let strOrderDeliveryDate = strDate
         
@@ -489,70 +506,24 @@ class SearchTripVC: UIViewController, UIPopoverPresentationControllerDelegate, P
         
         textField.resignFirstResponder()
         
+        self.startPoint()
+        
         return true
     }
     
     
     public func textFieldDidBeginEditing(_ textField: UITextField) {
         
-        //        if txtFrom == textField {
-        //            if isOnDemandShipment {
-        //                let CVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "selectUserAddressViewController") as! selectUserAddressViewController
-        //
-        //                CVC.selectAddressStr = dictTripInfo["city_name"] as! NSString
-        //
-        //                CVC.delegate = self
-        //                CVC.addressType = "from"
-        //                self .present(CVC, animated: true, completion: nil)
-        //            }
-        //        }
-        //        else if txtTo == textField {
-        //
-        //            if isOnDemandShipment {
-        //                let CVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "selectUserAddressViewController") as! selectUserAddressViewController
-        //
-        //                CVC.selectAddressStr = dictTripInfo["city_name"] as! NSString
-        //                CVC.delegate = self
-        //                CVC.addressType = "to"
-        //                self .present(CVC, animated: true, completion: nil)
-        //            }
-        //        }
-        //        else if txtSelectCity == textField {
-        //
-        //        }
-        //        else
         if txtWeight == textField {
             
-            adjustFrame(yAxiz: -50)
+//            adjustFrame(yAxiz: -50)
         }
     }
     
     
     public func textFieldDidEndEditing(_ textField: UITextField) {
         
-        if endEditingNow == "yes" {
-            
-            endEditingNow = ""
-            return
-        }
-            
-            //        if txtSelectCity == textField {
-            //
-            //        }
-            //        else if txtFrom == textField {
-            //
-            //        }
-            //        else if txtTo == textField {
-            //
-            //        }
-//        else if txtWeight == textField {
-//
-//            txtPrice.becomeFirstResponder()
-//        }
-//        else if txtPrice == textField {
-//
-//            self.startPoint()
-//        }
+//        self.startPoint()
     }
     
     
@@ -564,20 +535,16 @@ class SearchTripVC: UIViewController, UIPopoverPresentationControllerDelegate, P
         
         if txtWeight == textField {
             
-            dictTripInfo["weight"] = updatedText
+            if updatedText.count < 4 {
+                
+                dictTripInfo["weight"] = updatedText
+            }
         }
-        
-        //        if txtFrom == textField || txtTo == textField || txtSelectCity == textField {
-        //
-        //            NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(getHintsFromTextField), object: textField)
-        //
-        //            self.perform(#selector(getHintsFromTextField), with: textField, afterDelay: 0.5)
-        //        }
-        
         if txtWeight == textField {
             
             return updatedText.count <= 3
         }
+        
         return true
     }
     
@@ -661,7 +628,11 @@ class SearchTripVC: UIViewController, UIPopoverPresentationControllerDelegate, P
             return
         }
         
-        
+        guard from?.Trim() != to?.Trim()  else {
+            
+            UIAlertController.Alert(title: "", msg: "From & To cannot match with each other.", vc: self)
+            return
+        }
         
         /*
          if isOnDemandShipment {
@@ -707,6 +678,13 @@ class SearchTripVC: UIViewController, UIPopoverPresentationControllerDelegate, P
          }
          */
         
+        if dictTripInfo["departure"] != "" {
+            
+            if dictTripInfo["arrival"] == "" {
+                
+                dictTripInfo["arrival"] = dictTripInfo["departure"]
+            }
+        }
         
         
         print(dictTripInfo)

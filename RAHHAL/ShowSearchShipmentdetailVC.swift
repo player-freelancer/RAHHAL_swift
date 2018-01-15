@@ -372,7 +372,24 @@ class ShowSearchShipmentdetailVC: UIViewController, UIPopoverPresentationControl
     
     
     //MARK:- ViewDayNDatePicker Dalegates
-    func btnCancelActionDatePickerView() -> Void {
+    func btnCancelActionDatePickerView(dateType: String) -> Void {
+        
+        if dateType == "start" {
+            dictShipmentInfo["departure"] = ""
+            btnStartDate.setTitle("Start Date", for: .normal)
+            dictShipmentInfo["arrival"] = ""
+            btnEndDate.setTitle("End Date", for: .normal)
+        }
+        else if dateType == "end" {
+            dictShipmentInfo["arrival"] = ""
+            btnEndDate.setTitle("End Date", for: .normal)
+        }
+        
+        self.hideDatePickerView()
+    }
+    
+    
+    func hideDatePickerView() -> Void {
         
         if viewDayNDatePicker != nil {
             
@@ -387,7 +404,7 @@ class ShowSearchShipmentdetailVC: UIViewController, UIPopoverPresentationControl
         
         dateFormatter.dateFormat = "yyyy-MM-d"
         
-        self.btnCancelActionDatePickerView()
+        self.hideDatePickerView()
         
         let strOrderDeliveryDate = strDate
         
@@ -573,18 +590,9 @@ class ShowSearchShipmentdetailVC: UIViewController, UIPopoverPresentationControl
         if endEditingNow == "yes" {
             
             endEditingNow = ""
+            self.startPoint()
             return
         }
-            
-            //        if txtSelectCity == textField {
-            //
-            //        }
-            //        else if txtFrom == textField {
-            //
-            //        }
-            //        else if txtTo == textField {
-            //
-            //        }
         else if txtWeight == textField {
             
             txtPrice.becomeFirstResponder()
@@ -603,12 +611,14 @@ class ShowSearchShipmentdetailVC: UIViewController, UIPopoverPresentationControl
         let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
         
         if txtWeight == textField {
-            
+            if updatedText.count < 4 {
             dictShipmentInfo["weight"] = updatedText
+            }
         }
         else if txtPrice == textField {
-            
+            if updatedText.count < 6 {
             dictShipmentInfo["fees"] = updatedText
+            }
         }
         
         //        if txtFrom == textField || txtTo == textField || txtSelectCity == textField {
@@ -624,7 +634,7 @@ class ShowSearchShipmentdetailVC: UIViewController, UIPopoverPresentationControl
         }
         else if txtPrice == textField {
             
-            return updatedText.count <= 8
+            return updatedText.count <= 5
         }
         return true
     }

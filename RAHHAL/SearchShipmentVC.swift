@@ -354,7 +354,26 @@ class SearchShipmentVC: UIViewController, UIPopoverPresentationControllerDelegat
     
     
     //MARK:- ViewDayNDatePicker Dalegates
-    func btnCancelActionDatePickerView() -> Void {
+    func btnCancelActionDatePickerView(dateType: String) -> Void {
+        
+        if dateType == "start" {
+            dictShipmentInfo["start_date"] = ""
+            
+            btnStartDate.setTitle("Start Date", for: .normal)
+            
+            dictShipmentInfo["end_date"] = ""
+            btnEndDate.setTitle("End Date", for: .normal)
+        }
+        else if dateType == "end" {
+            dictShipmentInfo["end_date"] = ""
+            btnEndDate.setTitle("End Date", for: .normal)
+        }
+        
+       self.hideDatePickerView()
+    }
+    
+    
+    func hideDatePickerView() -> Void {
         
         if viewDayNDatePicker != nil {
             
@@ -369,7 +388,7 @@ class SearchShipmentVC: UIViewController, UIPopoverPresentationControllerDelegat
         
         dateFormatter.dateFormat = "yyyy-MM-d"
         
-        self.btnCancelActionDatePickerView()
+        self.hideDatePickerView()
         
         let strOrderDeliveryDate = strDate
         
@@ -523,6 +542,7 @@ class SearchShipmentVC: UIViewController, UIPopoverPresentationControllerDelegat
         if endEditingNow == "yes" {
             
             endEditingNow = ""
+            self.startPoint()
             return
         }
         else if txtWeight == textField {
@@ -543,12 +563,14 @@ class SearchShipmentVC: UIViewController, UIPopoverPresentationControllerDelegat
         let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
         
         if txtWeight == textField {
-            
+            if updatedText.count < 4 {
             dictShipmentInfo["weight"] = updatedText
+            }
         }
         else if txtPrice == textField {
-            
+            if updatedText.count < 6 {
             dictShipmentInfo["fees"] = updatedText
+            }
         }
         
         if txtWeight == textField {
@@ -557,7 +579,7 @@ class SearchShipmentVC: UIViewController, UIPopoverPresentationControllerDelegat
         }
         else if txtPrice == textField {
             
-            return updatedText.count <= 8
+            return updatedText.count <= 5
         }
         return true
     }
@@ -626,6 +648,20 @@ class SearchShipmentVC: UIViewController, UIPopoverPresentationControllerDelegat
             
             UIAlertController.Alert(title: "", msg: "To cannot be left blank.", vc: self)
             return
+        }
+        
+        guard from?.Trim() != to?.Trim()  else {
+            
+            UIAlertController.Alert(title: "", msg: "From & To cannot match with each other.", vc: self)
+            return
+        }
+        
+        if dictShipmentInfo["start_date"] != "" {
+            
+            if dictShipmentInfo["end_date"] == "" {
+                
+                dictShipmentInfo["end_date"] = dictShipmentInfo["start_date"]
+            }
         }
         
         print(dictShipmentInfo)

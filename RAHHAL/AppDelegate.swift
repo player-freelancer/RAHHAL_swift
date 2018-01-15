@@ -24,6 +24,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         
         GMSPlacesClient.provideAPIKey("AIzaSyDplRT91OpjXDlqxm9FIiNsYRT6ztDLy1c")
 
+        TestFairy.begin("eb037fee3cb17103a4a5aced91d80a271f0fdab4")
+        
         FirebaseApp.configure()
         
         Fabric.sharedSDK().debug = true

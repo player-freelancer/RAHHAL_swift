@@ -339,7 +339,26 @@ class PostShipmentVC: UIViewController, UIPopoverPresentationControllerDelegate,
     
     
     //MARK:- ViewDayNDatePicker Dalegates
-    func btnCancelActionDatePickerView() -> Void {
+    func btnCancelActionDatePickerView(dateType: String) -> Void {
+        
+        if dateType == "start" {
+            dictShipmentInfo["start_date"] = ""
+            
+            btnStartDate.setTitle("Start Date", for: .normal)
+            
+            dictShipmentInfo["end_date"] = ""
+            btnEndDate.setTitle("End Date", for: .normal)
+        }
+        else if dateType == "end" {
+            dictShipmentInfo["end_date"] = ""
+            btnEndDate.setTitle("End Date", for: .normal)
+        }
+        
+        self.hideDatePickerView()
+    }
+    
+    
+    func hideDatePickerView() -> Void {
         
         if viewDayNDatePicker != nil {
             
@@ -354,7 +373,7 @@ class PostShipmentVC: UIViewController, UIPopoverPresentationControllerDelegate,
         
         dateFormatter.dateFormat = "yyyy-MM-d"
         
-        self.btnCancelActionDatePickerView()
+        self.hideDatePickerView()
         
         let strOrderDeliveryDate = strDate
         
@@ -580,6 +599,7 @@ class PostShipmentVC: UIViewController, UIPopoverPresentationControllerDelegate,
         if endEditingNow == "yes" {
             
             endEditingNow = ""
+             self.startPoint()
             return
         }
         
@@ -626,11 +646,15 @@ class PostShipmentVC: UIViewController, UIPopoverPresentationControllerDelegate,
         }
         else if txtWeight == textField {
             
+            if updatedText.count < 4 {
             dictShipmentInfo["weight"] = updatedText
+            }
         }
         else if txtPrice == textField {
             
+            if updatedText.count < 6 {
             dictShipmentInfo["fees"] = updatedText
+            }
         }
         
         if txtFrom == textField || txtTo == textField || txtSelectCity == textField {
@@ -646,7 +670,7 @@ class PostShipmentVC: UIViewController, UIPopoverPresentationControllerDelegate,
         }
         else if txtPrice == textField {
             
-            return updatedText.count <= 8
+            return updatedText.count <= 5
         }
         return true
     }
@@ -904,6 +928,12 @@ class PostShipmentVC: UIViewController, UIPopoverPresentationControllerDelegate,
             return
         }
         
+        
+        guard from?.Trim() != to?.Trim()  else {
+            
+            UIAlertController.Alert(title: "", msg: "From & To cannot match with each other.", vc: self)
+            return
+        }
         
         /*
         if isOnDemandShipment {

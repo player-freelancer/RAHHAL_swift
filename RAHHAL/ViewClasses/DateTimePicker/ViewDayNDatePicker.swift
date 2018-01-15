@@ -8,10 +8,11 @@
 
 protocol ViewDayNDatePickerDelegates {
         
-    func btnCancelActionDatePickerView()
+    func btnCancelActionDatePickerView(dateType: String)
         
     func btnDoneActionDatePickerView(strDate: String, strDateAndTime: String, dateType: String)
 }
+
 
 import UIKit
 
@@ -74,7 +75,7 @@ class ViewDayNDatePicker: UIView {
         
     @IBAction func btnCancelAction(_ sender: UIButton) {
             
-        delegates?.btnCancelActionDatePickerView()
+        delegates?.btnCancelActionDatePickerView(dateType: myDateType)
     }
         
         

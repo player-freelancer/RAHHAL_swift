@@ -24,6 +24,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         
         super.viewDidLoad()
         
+        
         UserDefaults.standard.removeSuite(named: "kToken")
         
         UserDefaults.standard.synchronize()
@@ -34,6 +35,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
         
         super.viewDidAppear(animated)
         
+        self.navigationController?.setNavigationBarHidden(true, animated: animated)
         self.createUI()
     }
     

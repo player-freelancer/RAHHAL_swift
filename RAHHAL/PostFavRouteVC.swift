@@ -498,6 +498,11 @@ class PostFavRouteVC: UIViewController, UIPopoverPresentationControllerDelegate,
             return
         }
         
+        guard from?.Trim() != to?.Trim()  else {
+            
+            UIAlertController.Alert(title: "", msg: "From & To cannot match with each other.", vc: self)
+            return
+        }
         
         print(dictFavRouteInfo)
         

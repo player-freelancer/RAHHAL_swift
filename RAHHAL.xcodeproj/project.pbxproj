@@ -68,6 +68,13 @@
 		FA0AD7571FE70E7100C55F67 /* ViewDayNDatePicker.xib in Resources */ = {isa = PBXBuildFile; fileRef = FA0AD7551FE70E7100C55F67 /* ViewDayNDatePicker.xib */; };
 		FA0AD7581FE70E7100C55F67 /* ViewDayNDatePicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0AD7561FE70E7100C55F67 /* ViewDayNDatePicker.swift */; };
 		FA0B96D41FE869F800702AFF /* selectUserAddressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA0B96D31FE869F800702AFF /* selectUserAddressViewController.swift */; };
+		FA0EDCA7200BA38C00FC4542 /* upload-dsym.sh in Resources */ = {isa = PBXBuildFile; fileRef = FA0EDCA4200BA38900FC4542 /* upload-dsym.sh */; };
+		FA0EDCA8200BA38C00FC4542 /* libTestFairy.a in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0EDCA5200BA38A00FC4542 /* libTestFairy.a */; };
+		FA0EDCAA200BA3B500FC4542 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0EDCA9200BA3B500FC4542 /* CoreMedia.framework */; };
+		FA0EDCAC200BA3CF00FC4542 /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0EDCAB200BA3CE00FC4542 /* CoreMotion.framework */; };
+		FA0EDCAE200BA3D700FC4542 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0EDCAD200BA3D600FC4542 /* AVFoundation.framework */; };
+		FA0EDCB0200BA3DF00FC4542 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0EDCAF200BA3DF00FC4542 /* SystemConfiguration.framework */; };
+		FA0EDCB2200BA3EE00FC4542 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0EDCB1200BA3EE00FC4542 /* OpenGLES.framework */; };
 		FA9F2D5D1FE5DA27003A5223 /* PostShipmentVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9F2D5C1FE5DA27003A5223 /* PostShipmentVC.swift */; };
 		FAA3C8241FF9832000FBD30C /* FavRouteVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA3C8231FF9832000FBD30C /* FavRouteVM.swift */; };
 		FAA3C8281FF99A1B00FBD30C /* SearchTripVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA3C8271FF99A1B00FBD30C /* SearchTripVC.swift */; };
@@ -196,6 +203,14 @@
 		FA0AD7551FE70E7100C55F67 /* ViewDayNDatePicker.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ViewDayNDatePicker.xib; sourceTree = "<group>"; };
 		FA0AD7561FE70E7100C55F67 /* ViewDayNDatePicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewDayNDatePicker.swift; sourceTree = "<group>"; };
 		FA0B96D31FE869F800702AFF /* selectUserAddressViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = selectUserAddressViewController.swift; sourceTree = "<group>"; };
+		FA0EDCA4200BA38900FC4542 /* upload-dsym.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; path = "upload-dsym.sh"; sourceTree = "<group>"; };
+		FA0EDCA5200BA38A00FC4542 /* libTestFairy.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libTestFairy.a; sourceTree = "<group>"; };
+		FA0EDCA6200BA38B00FC4542 /* TestFairy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TestFairy.h; sourceTree = "<group>"; };
+		FA0EDCA9200BA3B500FC4542 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
+		FA0EDCAB200BA3CE00FC4542 /* CoreMotion.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMotion.framework; path = System/Library/Frameworks/CoreMotion.framework; sourceTree = SDKROOT; };
+		FA0EDCAD200BA3D600FC4542 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
+		FA0EDCAF200BA3DF00FC4542 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
+		FA0EDCB1200BA3EE00FC4542 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
 		FA9F2D5C1FE5DA27003A5223 /* PostShipmentVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostShipmentVC.swift; sourceTree = "<group>"; };
 		FAA3C8231FF9832000FBD30C /* FavRouteVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavRouteVM.swift; sourceTree = "<group>"; };
 		FAA3C8271FF99A1B00FBD30C /* SearchTripVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTripVC.swift; sourceTree = "<group>"; };
@@ -220,7 +235,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA0EDCB2200BA3EE00FC4542 /* OpenGLES.framework in Frameworks */,
+				FA0EDCB0200BA3DF00FC4542 /* SystemConfiguration.framework in Frameworks */,
+				FA0EDCAE200BA3D700FC4542 /* AVFoundation.framework in Frameworks */,
+				FA0EDCAC200BA3CF00FC4542 /* CoreMotion.framework in Frameworks */,
+				FA0EDCAA200BA3B500FC4542 /* CoreMedia.framework in Frameworks */,
 				FAC375481FE85ECC0044BBBB /* CoreGraphics.framework in Frameworks */,
+				FA0EDCA8200BA38C00FC4542 /* libTestFairy.a in Frameworks */,
 				B0487A000009706D17A18BFC /* Pods_RAHHAL.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -365,6 +386,9 @@
 		356BC8691FD3177B00B977EF /* RAHHAL */ = {
 			isa = PBXGroup;
 			children = (
+				FA0EDCA5200BA38A00FC4542 /* libTestFairy.a */,
+				FA0EDCA6200BA38B00FC4542 /* TestFairy.h */,
+				FA0EDCA4200BA38900FC4542 /* upload-dsym.sh */,
 				FA01748E1FFEB27A00E4D1B8 /* GoogleService-Info.plist */,
 				FA0AD73A1FE6F93600C55F67 /* ViewClasses */,
 				351CBB711FDDA9C600CB164F /* TableViewCell */,
@@ -534,6 +558,11 @@
 		FAC375421FE8562B0044BBBB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FA0EDCB1200BA3EE00FC4542 /* OpenGLES.framework */,
+				FA0EDCAF200BA3DF00FC4542 /* SystemConfiguration.framework */,
+				FA0EDCAD200BA3D600FC4542 /* AVFoundation.framework */,
+				FA0EDCAB200BA3CE00FC4542 /* CoreMotion.framework */,
+				FA0EDCA9200BA3B500FC4542 /* CoreMedia.framework */,
 				FAC375471FE85EAD0044BBBB /* CoreGraphics.framework */,
 				FAC375461FE85E9C0044BBBB /* CoreImage.framework */,
 				FAC375431FE8562D0044BBBB /* libz.tbd */,
@@ -733,6 +762,7 @@
 				FA01748F1FFEB27B00E4D1B8 /* GoogleService-Info.plist in Resources */,
 				FA0174881FFE9D5600E4D1B8 /* OleoScript-Regular.ttf in Resources */,
 				FA0A2CD41FF5509800A6992C /* MyProfileHeader.xib in Resources */,
+				FA0EDCA7200BA38C00FC4542 /* upload-dsym.sh in Resources */,
 				356BC8721FD3177B00B977EF /* Assets.xcassets in Resources */,
 				35BD34D11FDC751200683A2B /* CustomLeftMenuTableViewCell.xib in Resources */,
 				356BC8701FD3177B00B977EF /* Main.storyboard in Resources */,
@@ -1186,6 +1216,10 @@
 				INFOPLIST_FILE = RAHHAL/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/RAHHAL",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.a1distribute.RAHHAL;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "884aed42-c189-4e37-8786-d83c6ce99737";
@@ -1221,6 +1255,10 @@
 				INFOPLIST_FILE = RAHHAL/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/RAHHAL",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.a1distribute.RAHHAL;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "884aed42-c189-4e37-8786-d83c6ce99737";

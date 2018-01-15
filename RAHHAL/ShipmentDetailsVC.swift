@@ -371,7 +371,26 @@ class ShipmentDetailsVC: UIViewController, UITextFieldDelegate, UITextViewDelega
     
     
     //MARK:- ViewDayNDatePicker Dalegates
-    func btnCancelActionDatePickerView() -> Void {
+    func btnCancelActionDatePickerView(dateType: String) -> Void {
+        
+        if dateType == "start" {
+            dictShipmentDetails["start_date"] = "" as AnyObject
+            
+            btnStartDate.setTitle("Start Date", for: .normal)
+            
+            dictShipmentDetails["end_date"] = "" as AnyObject
+            btnEndDate.setTitle("End Date", for: .normal)
+        }
+        else if dateType == "end" {
+            dictShipmentDetails["end_date"] = "" as AnyObject
+            btnEndDate.setTitle("End Date", for: .normal)
+        }
+        
+        self.hideDatePickerView()
+    }
+    
+    
+    func hideDatePickerView() -> Void {
         
         if viewDayNDatePicker != nil {
             
@@ -380,13 +399,14 @@ class ShipmentDetailsVC: UIViewController, UITextFieldDelegate, UITextViewDelega
     }
     
     
+    
     func btnDoneActionDatePickerView(strDate: String, strDateAndTime: String, dateType: String) -> Void {
         
         let dateFormatter = DateFormatter()
         
         dateFormatter.dateFormat = "yyyy-MM-d"
         
-        self.btnCancelActionDatePickerView()
+        self.hideDatePickerView()
         
         let strOrderDeliveryDate = strDate
         
@@ -589,6 +609,7 @@ class ShipmentDetailsVC: UIViewController, UITextFieldDelegate, UITextViewDelega
         if endEditingNow == "yes" {
             
             endEditingNow = ""
+            self.startPoint()
             return
         }
         
@@ -611,11 +632,17 @@ class ShipmentDetailsVC: UIViewController, UITextFieldDelegate, UITextViewDelega
         
         if txtWeight == textField {
             
-            dictShipmentDetails["weight"] = updatedText as AnyObject
+            if updatedText.count < 4 {
+                
+                dictShipmentDetails["weight"] = updatedText as AnyObject
+            }
+            
         }
         else if txtPrice == textField {
             
-            dictShipmentDetails["fees"] = updatedText as AnyObject
+            if updatedText.count < 6 {
+                dictShipmentDetails["fees"] = updatedText as AnyObject
+            }
         }
         
         if txtWeight == textField {
@@ -624,7 +651,7 @@ class ShipmentDetailsVC: UIViewController, UITextFieldDelegate, UITextViewDelega
         }
         else if txtPrice == textField {
             
-            return updatedText.count <= 8
+            return updatedText.count <= 5
         }
         return true
     }
@@ -775,6 +802,12 @@ class ShipmentDetailsVC: UIViewController, UITextFieldDelegate, UITextViewDelega
         guard !(endDate?.isEmpty)! else {
             
             UIAlertController.Alert(title: "", msg: "End date cannot be left blank.", vc: self)
+            return
+        }
+        
+        guard from?.Trim() != to?.Trim()  else {
+            
+            UIAlertController.Alert(title: "", msg: "From & To cannot match with each other.", vc: self)
             return
         }
         

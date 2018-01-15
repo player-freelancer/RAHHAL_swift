@@ -27,7 +27,7 @@ class ViewLeftMenu: UIView, UITableViewDelegate, UITableViewDataSource {
     
     var delegates: ViewLeftMenuDelegates?
     
-    let arrTitle = ["My Shipments","My Trips","Favourite Routes","Settings"]
+    let arrTitle = ["My Shipments","My Trips","Favourite Routes","Settings","Logout"]
 
     func reloadMenu() {
         
