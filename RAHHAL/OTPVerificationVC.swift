@@ -186,37 +186,55 @@ class OTPVerificationVC: UIViewController, UITextFieldDelegate {
         self.resendOTPCode()
     }
     
+    
+    func callDashboard() -> Void {
+        
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        
+        let rpNavigationVC = storyboard.instantiateViewController(withIdentifier: "rpNavigationVC") as! RPNavigationVC
+        
+        let appdelegate = UIApplication.shared.delegate as! AppDelegate
+        
+        appdelegate.window?.rootViewController = rpNavigationVC
+    }
+    
+    
     //MARK: - call APIs
     func verifyOTP(otp: String) -> Void {
+        
         CommonFile.shared.hudShow(strText: "")
         
         UserVM.shared.verifyOTPAPI(phoneNo: myMobileNumber, otpCode: otp, completionHandler: { (dictResponse) in
             
             DispatchQueue.main.async {
                 
-                CommonFile.shared.hudDismiss()
+                print(dictResponse)
+                
                 if let status = dictResponse["status"] as? Bool, status == true {
                     
                     if let dictUser = dictResponse["data"] as? [String: AnyObject] {
                         
                         if let response = dictUser["response"] as? String, response == "success" {
                             
+                            print(dictUser)
+                            
                             UserDefaults.standard.set(dictUser["token"] as! String, forKey: "kToken")
                             
                             UserDefaults.standard.set(dictUser["user"] as! [String:AnyObject], forKey: "kUser")
                             
-                            let storyboard = UIStoryboard(name: "Main", bundle: nil)
-                            
-                            let rpNavigationVC = storyboard.instantiateViewController(withIdentifier: "rpNavigationVC") as! RPNavigationVC
-                            
-                            let appdelegate = UIApplication.shared.delegate as! AppDelegate
-                            
-                            appdelegate.window?.rootViewController = rpNavigationVC
+                            self.checkExistUserOnFirebase()
                         }
+                        else {
+                            CommonFile.shared.hudDismiss()
+                        }
+                    }
+                    else {
+                        CommonFile.shared.hudDismiss()
                     }
                 }
                 else {
                     
+                    CommonFile.shared.hudDismiss()
                     let errorMsg = dictResponse["message"] as? String ?? Something_went_wrong_please_try_again
                     
                     UIAlertController.Alert(title: alertTitleError, msg: errorMsg, vc: self)
@@ -262,6 +280,42 @@ class OTPVerificationVC: UIViewController, UITextFieldDelegate {
             }
         })
     }
+    
+    
+    func checkExistUserOnFirebase() -> Void {
+        
+        if let dictUserInfo = UserDefaults.standard.object(forKey: "kUser") as? [String: AnyObject] {
+         
+            let myId = dictUserInfo["id"] as! String
+            
+            FirebaseManager.sharedInstance.checkUserNameAlreadyExist(userId: myId) { (isExistUser) in
+                if isExistUser {
+                    
+                    CommonFile.shared.hudDismiss()
+                    self.callDashboard()
+                }
+                else {
+                    
+                    self.registrationOnFireBase()
+                }
+            }
+        }
+    }
+    
+    
+    func registrationOnFireBase() -> Void {
+        
+        FirebaseManager.sharedInstance.CreateUser { (status, errorMsg) in
+            
+            CommonFile.shared.hudDismiss()
+            if status == "yes" {
+                
+                self.callDashboard()
+                
+            }
+        }
+    }
+    
     
     //MARK: - Delegate UITextField
     public func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {

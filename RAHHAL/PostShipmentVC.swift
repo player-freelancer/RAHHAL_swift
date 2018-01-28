@@ -67,6 +67,9 @@ class PostShipmentVC: UIViewController, UIPopoverPresentationControllerDelegate,
     
     var queue = OperationQueue()
     
+    var yAxizNavigation: Float!
+    
+    
     // MARK: - VC LifeCycle
     override func viewDidLoad() {
         
@@ -97,6 +100,13 @@ class PostShipmentVC: UIViewController, UIPopoverPresentationControllerDelegate,
         self.navigationView()
     }
     
+    
+    override func viewDidAppear(_ animated: Bool) {
+        
+        super.viewDidAppear(animated)
+        
+        yAxizNavigation = Float((self.navigationController?.navigationBar.frame.size.height)!) + 20
+    }
     
     override func didReceiveMemoryWarning() {
         
@@ -555,18 +565,27 @@ class PostShipmentVC: UIViewController, UIPopoverPresentationControllerDelegate,
     
     public func textFieldDidBeginEditing(_ textField: UITextField) {
         
+        if viewDayNDatePicker != nil {
+            
+            viewDayNDatePicker.removeFromSuperview()
+        }
+        
         if txtTitle == textField {
             
         }
         else if txtFrom == textField {
-            if isOnDemandShipment {
-            let CVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "selectUserAddressViewController") as! selectUserAddressViewController
             
-            CVC.selectAddressStr = dictShipmentInfo["city_name"] as! NSString
+            if isOnDemandShipment {
+                
+                let CVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "selectUserAddressViewController") as! selectUserAddressViewController
+            
+                CVC.selectAddressStr = dictShipmentInfo["city_name"] as! NSString
             
                 CVC.delegate = self
+                
                 CVC.addressType = "from"
-            self .present(CVC, animated: true, completion: nil)
+                
+                self .present(CVC, animated: true, completion: nil)
             }
         }
         else if txtTo == textField {
@@ -579,9 +598,6 @@ class PostShipmentVC: UIViewController, UIPopoverPresentationControllerDelegate,
                 CVC.addressType = "to"
                 self .present(CVC, animated: true, completion: nil)
             }
-        }
-        else if txtSelectCity == textField {
-        
         }
         else if txtWeight == textField {
             
@@ -748,13 +764,12 @@ class PostShipmentVC: UIViewController, UIPopoverPresentationControllerDelegate,
     
     
     // MARK: - Adjust VC With Animation
-    
     func startPoint() -> Void {
         
-        let yAxiz =  Float((self.navigationController?.navigationBar.frame.size.height)!) + 20
         
-        self.view.frame = CGRect(x: self.view.frame.origin.x, y: CGFloat(yAxiz), width: self.view.frame.size.width, height: self.view.frame.size.height)
+        self.view.frame = CGRect(x: self.view.frame.origin.x, y: CGFloat(yAxizNavigation), width: self.view.frame.size.width, height: self.view.frame.size.height)
     }
+    
     
     func adjustFrame(yAxiz: Float) -> Void {
         
@@ -768,7 +783,6 @@ class PostShipmentVC: UIViewController, UIPopoverPresentationControllerDelegate,
         UIView.animate(withDuration: durationTime) {
             
             self.view.frame = CGRect(x: self.view.frame.origin.x, y: CGFloat(yAxiz), width: self.view.frame.size.width, height: self.view.frame.size.height)
-            
         }
     }
     

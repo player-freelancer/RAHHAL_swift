@@ -22,6 +22,12 @@ class MyFavRoutesVC: UIViewController , UITableViewDelegate, UITableViewDataSour
     
     var arrMyFavRoute = [[String:AnyObject]]()
     
+    var pagingSpinner: UIActivityIndicatorView!
+    
+    var pageNo = 1
+    
+    var totalCount = 0
+    
     
     //MARK: - VC LifeCycle
     override func viewDidLoad() {
@@ -35,7 +41,9 @@ class MyFavRoutesVC: UIViewController , UITableViewDelegate, UITableViewDataSour
         
         tblMyFavRoute.tableFooterView = UIView()
         
-        // Do any additional setup after loading the view.
+        pagingSpinner = CommonFile.shared.activityIndicatorView()
+        
+        tblMyFavRoute.tableFooterView = pagingSpinner
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -44,7 +52,7 @@ class MyFavRoutesVC: UIViewController , UITableViewDelegate, UITableViewDataSour
         
         self.navigationView()
         
-        self.getMyFavRoutesAPI()
+        self.getMyFavRoutesAPI(isCallFirstTime: true)
     }
     
     
@@ -199,12 +207,27 @@ class MyFavRoutesVC: UIViewController , UITableViewDelegate, UITableViewDataSour
         self.navigationController?.pushViewController(postFavRouteVC, animated: true)
     }
     
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        
+        if arrMyFavRoute.count < totalCount && indexPath.row == (arrMyFavRoute.count-1) {
+            
+            self.getMyFavRoutesAPI(isCallFirstTime: false)
+        }
+    }
     
-    func getMyFavRoutesAPI() -> Void {
+    
+    func getMyFavRoutesAPI(isCallFirstTime: Bool) -> Void {
         
-        CommonFile.shared.hudShow(strText: "")
-        
-        arrMyFavRoute.removeAll()
+        if isCallFirstTime {
+            
+            CommonFile.shared.hudShow(strText: "")
+            
+            arrMyFavRoute.removeAll()
+        }
+        else {
+            
+            self.pagingSpinner.startAnimating()
+        }
         
         FavRouteVM.shared.getMyFavRoutes(pageNumber: 1, completionHandler: { (dictResponse) in
             
@@ -213,13 +236,29 @@ class MyFavRoutesVC: UIViewController , UITableViewDelegate, UITableViewDataSour
                 print(dictResponse)
                 CommonFile.shared.hudDismiss()
                 
+                self.pagingSpinner.stopAnimating()
+                
                 if let status = dictResponse["status"] as? Bool, status == true {
+                    
+                    self.pageNo = self.pageNo + 1
                     
                     if let data = dictResponse["data"] as? [String: AnyObject] {
                         
+                        if let dictPage = data["page"] as? [String: AnyObject] {
+                            
+                            self.totalCount = Int(dictPage["total"] as! String)!
+                        }
+                        
                         if let response = data["response"] as? String, response == "success" {
                             
-                            self.arrMyFavRoute = data["routes"] as! [[String: AnyObject]]
+                            let arrRoutes = data["routes"] as! [[String: AnyObject]]
+                            
+                            if isCallFirstTime {
+                                self.arrMyFavRoute = arrRoutes
+                            }
+                            else {
+                                self.arrMyFavRoute.append(contentsOf: arrRoutes)
+                            }
                             
                             if self.arrMyFavRoute.isEmpty {
                                 

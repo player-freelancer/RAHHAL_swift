@@ -24,6 +24,8 @@ class MyTripsTVCell: UITableViewCell {
     
     @IBOutlet var lblPrice: UILabel!
     
+    @IBOutlet var btnChat: UIButton!
+    
     
     override func awakeFromNib() {
        

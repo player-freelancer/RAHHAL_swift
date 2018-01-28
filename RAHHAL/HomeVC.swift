@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 //import Crashlytics
 
 class HomeVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPopoverPresentationControllerDelegate {
@@ -24,11 +25,27 @@ class HomeVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPo
     
     var arrMyShipments = [[String:AnyObject]]()
     
+    var pagingSpinner: UIActivityIndicatorView!
+    
+    var pageNo = 1
+    
+    var totalCount = 0
+    
+    var myUserId = String()
+    
+    private var channels: [Channel] = []
+    
+    private lazy var channelRef: DatabaseReference = Database.database().reference()
+    
     
     //MARK: - VC LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        let dictUserInfo = UserDefaults.standard.object(forKey: "kUser") as! [String: AnyObject]
+        
+        myUserId = dictUserInfo["id"] as! String
+        
         let plaveholderView = Bundle.main.loadNibNamed("ViewPlaceHolder", owner: nil, options: nil)?[0] as! ViewPlaceHolder
         
         plaveholderView.setPlaceHolderText(strString: "Currently, you don't have any shipments")
@@ -37,7 +54,9 @@ class HomeVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPo
        
         tblMyShipments.tableFooterView = UIView()
         
-        // Do any additional setup after loading the view.
+        pagingSpinner = CommonFile.shared.activityIndicatorView()
+        
+        tblMyShipments.tableFooterView = pagingSpinner
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -49,7 +68,7 @@ class HomeVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPo
         
         self.navigationView()
         
-        self.getMyShipmentsAPI()
+        self.getMyShipmentsAPI(isCallFirstTime: true)
     }
 
     override func didReceiveMemoryWarning() {
@@ -194,6 +213,42 @@ class HomeVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPo
         return UIModalPresentationStyle.none
     }
     
+    @objc func btnChatShipmentAction(sender: UIButton) -> Void {
+        
+        let point = sender.convert(CGPoint.zero, to: tblMyShipments)
+        
+        let indexPath = tblMyShipments.indexPathForRow(at: point)
+        
+        let dictChatInfo = arrMyShipments[(indexPath?.row)!]
+        
+        if let chatId = dictChatInfo["chatId"] as? String {
+            
+            let name = dictChatInfo["name"] as! String
+            
+            let patnerId = dictChatInfo["patnerId"] as! String
+            
+            
+            self.channels.append(Channel(id: chatId, name: name, panterId: patnerId))
+            
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            
+            let chatVC = storyboard.instantiateViewController(withIdentifier: "chatViewController") as! ChatViewController
+            
+            //        let chatViewController = ChatViewController(nibName: "ChatViewController", bundle: nil)
+            
+            chatVC.channelRef = channelRef.child(channels[0].id)
+            
+            chatVC.channel = channels[0]
+            
+            chatVC.senderDisplayName = "kk"
+            
+            chatVC.chatType = "ChatShipment"
+            
+            self.navigationController?.pushViewController(chatVC, animated: true)
+        }
+    }
+    
+    
     @objc func btnDeleteShipmentAction(sender: UIButton) -> Void {
         
         let point = sender.convert(CGPoint.zero, to: tblMyShipments)
@@ -237,6 +292,15 @@ class HomeVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPo
         
         cell.showMyShipmentData(dictShipment: arrMyShipments[indexPath.row])
         
+        cell.btnChat.backgroundColor = UIColor.clear
+        
+        if let statusMsgUnread = arrMyShipments[indexPath.row]["unread"] as? String, statusMsgUnread == "1" {
+            
+            cell.btnChat.backgroundColor = UIColor.green
+        }
+        
+        cell.btnChat.addTarget(self, action: #selector(btnChatShipmentAction(sender:)), for: .touchUpInside)
+        
         cell.btnCross.addTarget(self, action: #selector(btnDeleteShipmentAction(sender:)), for: .touchUpInside)
         
         return cell
@@ -255,27 +319,55 @@ class HomeVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPo
         self.navigationController?.pushViewController(shipmentDetailsVC, animated: true)
     }
     
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        
+        if arrMyShipments.count < totalCount && indexPath.row == (arrMyShipments.count-1) {
+            
+            self.getMyShipmentsAPI(isCallFirstTime: false)
+        }
+    }
     
-    func getMyShipmentsAPI() -> Void {
+    
+    func getMyShipmentsAPI(isCallFirstTime: Bool) -> Void {
         
-        CommonFile.shared.hudShow(strText: "")
+        if isCallFirstTime {
+            
+            CommonFile.shared.hudShow(strText: "")
+            pageNo = 1
+            arrMyShipments.removeAll()
+        }
+        else {
+            
+            self.pagingSpinner.startAnimating()
+        }
         
-        arrMyShipments.removeAll()
-        
-        ShipmentsVM.shared.getMyShipments(completionHandler: { (dictResponse) in
+        ShipmentsVM.shared.getMyShipments(pageNo: pageNo, completionHandler: { (dictResponse) in
             
             DispatchQueue.main.async {
                 
                 print(dictResponse)
-                CommonFile.shared.hudDismiss()
                 
                 if let status = dictResponse["status"] as? Bool, status == true {
                     
+                    self.pageNo = self.pageNo + 1
+                    
                     if let data = dictResponse["data"] as? [String: AnyObject] {
+                        
+                        if let dictPage = data["page"] as? [String: AnyObject] {
+                            
+                            self.totalCount = Int(dictPage["total"] as! String)!
+                        }
                         
                         if let response = data["response"] as? String, response == "success" {
                             
-                            self.arrMyShipments = data["shipments"] as! [[String: AnyObject]]
+                            let arrShipment = data["shipments"] as! [[String: AnyObject]]
+                            
+                            if isCallFirstTime {
+                                self.arrMyShipments = arrShipment
+                            }
+                            else {
+                                self.arrMyShipments.append(contentsOf: arrShipment)
+                            }
                             
                             if self.arrMyShipments.isEmpty {
                                 
@@ -290,12 +382,16 @@ class HomeVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPo
                                 self.tblMyShipments.isHidden = false
                             }
                             
-                            self.tblMyShipments.reloadData()
+                            self.getMyShipmentChat()
+//                            self.tblMyShipments.reloadData()
                         }
                     }
                 }
                 else {
                     
+                    
+                    CommonFile.shared.hudDismiss()
+                    self.pagingSpinner.stopAnimating()
                     let errorMsg = dictResponse["message"] as? String ?? Something_went_wrong_please_try_again
                     
                     UIAlertController.Alert(title: alertTitleError, msg: errorMsg, vc: self)
@@ -305,10 +401,57 @@ class HomeVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPo
             
             DispatchQueue.main.async {
                 CommonFile.shared.hudDismiss()
+                self.pagingSpinner.stopAnimating()
                 print(errorCode)
                 UIAlertController.Alert(title: alertTitleError, msg: Something_went_wrong_please_try_again, vc: self)
             }
         })
+    }
+    
+    
+    
+    func getMyShipmentChat() -> Void {
+        
+        FirebaseManager.sharedInstance.getMyAllShipments(key: "chatRequestTo") { (arrMyFirebaseChat) in
+            
+            DispatchQueue.main.async {
+                
+                if !arrMyFirebaseChat.isEmpty {
+                    
+                    for dictChatInfo in arrMyFirebaseChat {
+                        
+                        var shipmentName = dictChatInfo["name"] as! String
+                        shipmentName = shipmentName.replacingOccurrences(of: "Dealshipment", with: "")
+                        let arr = shipmentName.split(separator: "-")
+                        
+                        print(arr)
+                        
+                        if self.arrMyShipments.contains(where: { ($0["id"] as! String == arr[0]) }){
+                            
+                            if let index = self.arrMyShipments.index(where: { ($0["id"] as! String == arr[0]) }) as? Int {
+                                
+                                var dictMyShipment = self.arrMyShipments[index]
+                                
+                                dictMyShipment["chatId"] = dictChatInfo["chatId"] as AnyObject
+                                
+                                dictMyShipment["name"] = dictChatInfo["name"] as AnyObject
+                                
+                                dictMyShipment["patnerId"] = arr[1] as AnyObject
+                                
+                                dictMyShipment["unread"] = dictChatInfo["unread\(self.myUserId)"]
+                                
+                                self.arrMyShipments[index] = dictMyShipment
+                                
+                            }
+                        }
+                    }
+                }
+                
+                self.tblMyShipments.reloadData()
+                self.pagingSpinner.stopAnimating()
+                CommonFile.shared.hudDismiss()
+            }
+        }
     }
     
     

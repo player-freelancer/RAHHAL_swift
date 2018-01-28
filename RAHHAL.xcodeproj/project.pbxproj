@@ -75,6 +75,10 @@
 		FA0EDCAE200BA3D700FC4542 /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0EDCAD200BA3D600FC4542 /* AVFoundation.framework */; };
 		FA0EDCB0200BA3DF00FC4542 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0EDCAF200BA3DF00FC4542 /* SystemConfiguration.framework */; };
 		FA0EDCB2200BA3EE00FC4542 /* OpenGLES.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = FA0EDCB1200BA3EE00FC4542 /* OpenGLES.framework */; };
+		FA336DE2201D23A200C89556 /* MessagesVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA336DE1201D23A200C89556 /* MessagesVC.swift */; };
+		FA5069D12013E36B002A2791 /* Channel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5069D02013E36A002A2791 /* Channel.swift */; };
+		FA5069D32013EDD8002A2791 /* ChatViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA5069D22013EDD8002A2791 /* ChatViewController.swift */; };
+		FA97E214200D152400694F05 /* FirebaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA97E213200D152300694F05 /* FirebaseManager.swift */; };
 		FA9F2D5D1FE5DA27003A5223 /* PostShipmentVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA9F2D5C1FE5DA27003A5223 /* PostShipmentVC.swift */; };
 		FAA3C8241FF9832000FBD30C /* FavRouteVM.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA3C8231FF9832000FBD30C /* FavRouteVM.swift */; };
 		FAA3C8281FF99A1B00FBD30C /* SearchTripVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = FAA3C8271FF99A1B00FBD30C /* SearchTripVC.swift */; };
@@ -211,6 +215,10 @@
 		FA0EDCAD200BA3D600FC4542 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		FA0EDCAF200BA3DF00FC4542 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		FA0EDCB1200BA3EE00FC4542 /* OpenGLES.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGLES.framework; path = System/Library/Frameworks/OpenGLES.framework; sourceTree = SDKROOT; };
+		FA336DE1201D23A200C89556 /* MessagesVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesVC.swift; sourceTree = "<group>"; };
+		FA5069D02013E36A002A2791 /* Channel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Channel.swift; sourceTree = "<group>"; };
+		FA5069D22013EDD8002A2791 /* ChatViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ChatViewController.swift; sourceTree = "<group>"; };
+		FA97E213200D152300694F05 /* FirebaseManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FirebaseManager.swift; sourceTree = "<group>"; };
 		FA9F2D5C1FE5DA27003A5223 /* PostShipmentVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostShipmentVC.swift; sourceTree = "<group>"; };
 		FAA3C8231FF9832000FBD30C /* FavRouteVM.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FavRouteVM.swift; sourceTree = "<group>"; };
 		FAA3C8271FF99A1B00FBD30C /* SearchTripVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTripVC.swift; sourceTree = "<group>"; };
@@ -335,6 +343,7 @@
 		352238781FDD939500709132 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
+				FA97E212200D152300694F05 /* FireBaseManager */,
 				FAA3C8221FF9832000FBD30C /* FavRouteManager */,
 				FAD2A6441FF7EFD3008A1D6E /* TripManager */,
 				352238791FDD939500709132 /* ShipmentManagers */,
@@ -403,6 +412,8 @@
 				356BC8711FD3177B00B977EF /* Assets.xcassets */,
 				356BC8731FD3177B00B977EF /* LaunchScreen.storyboard */,
 				356BC8761FD3177B00B977EF /* Info.plist */,
+				FA5069D22013EDD8002A2791 /* ChatViewController.swift */,
+				FA5069D02013E36A002A2791 /* Channel.swift */,
 				35071E661FD40EF800502F6F /* SignUpVC.swift */,
 				35071E681FD4349B00502F6F /* OTPVerificationVC.swift */,
 				35214D611FD7015D00BF2295 /* Localizable.strings */,
@@ -423,6 +434,7 @@
 				FABA0A2D1FFC05540017B81D /* SearchShipmentVC.swift */,
 				FABA0A2F1FFC0EEC0017B81D /* SearchShipmentListVC.swift */,
 				FABA0A311FFC1C980017B81D /* ShowSearchShipmentdetailVC.swift */,
+				FA336DE1201D23A200C89556 /* MessagesVC.swift */,
 			);
 			path = RAHHAL;
 			sourceTree = "<group>";
@@ -545,6 +557,14 @@
 				FA0AD7481FE6F93600C55F67 /* ViewDropDownList.xib */,
 			);
 			path = PopUpView;
+			sourceTree = "<group>";
+		};
+		FA97E212200D152300694F05 /* FireBaseManager */ = {
+			isa = PBXGroup;
+			children = (
+				FA97E213200D152300694F05 /* FirebaseManager.swift */,
+			);
+			path = FireBaseManager;
 			sourceTree = "<group>";
 		};
 		FAA3C8221FF9832000FBD30C /* FavRouteManager */ = {
@@ -810,14 +830,24 @@
 			);
 			inputPaths = (
 				"${SRCROOT}/Pods/Target Support Files/Pods-RAHHAL/Pods-RAHHAL-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
+				"${BUILT_PRODUCTS_DIR}/JSQMessagesViewController/JSQMessagesViewController.framework",
+				"${BUILT_PRODUCTS_DIR}/JSQSystemSoundPlayer/JSQSystemSoundPlayer.framework",
+				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
 				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
+				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
 				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JSQMessagesViewController.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/JSQSystemSoundPlayer.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -965,6 +995,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FA97E214200D152400694F05 /* FirebaseManager.swift in Sources */,
 				FA0A2CD21FF5508C00A6992C /* MyProfileHeader.swift in Sources */,
 				FA0A2CD61FF5578C00A6992C /* MyprofileTVCell.swift in Sources */,
 				FAB32A1B1FF973BE00AB91AB /* MyFavRoutesVC.swift in Sources */,
@@ -987,6 +1018,7 @@
 				FA0AD74F1FE6F93700C55F67 /* DropDownTVCell.swift in Sources */,
 				FABA0A321FFC1C980017B81D /* ShowSearchShipmentdetailVC.swift in Sources */,
 				FA0AD7541FE6FE2900C55F67 /* PopOverSegueForShipmentTypeVC.swift in Sources */,
+				FA336DE2201D23A200C89556 /* MessagesVC.swift in Sources */,
 				35071E7E1FD45F1400502F6F /* FontExt.swift in Sources */,
 				FABA0A2C1FFBF42F0017B81D /* SearchTripListVC.swift in Sources */,
 				35180A971FD6E0F500A27F42 /* MBProgressHUD.m in Sources */,
@@ -1015,6 +1047,8 @@
 				FA9F2D5D1FE5DA27003A5223 /* PostShipmentVC.swift in Sources */,
 				356BC86B1FD3177B00B977EF /* AppDelegate.swift in Sources */,
 				35214D641FD710C600BF2295 /* HomeVC.swift in Sources */,
+				FA5069D12013E36B002A2791 /* Channel.swift in Sources */,
+				FA5069D32013EDD8002A2791 /* ChatViewController.swift in Sources */,
 				35071E7F1FD45F1400502F6F /* ColorExt.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

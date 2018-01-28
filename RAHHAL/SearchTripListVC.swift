@@ -14,10 +14,21 @@ class SearchTripListVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     
     var arrMyTrips = [[String:AnyObject]]()
     
+    var pagingSpinner: UIActivityIndicatorView!
+    
+    var pageNo = 2
+    
+    var totalCount = 0
+    
+    var dictTripInfo = [String: AnyObject]()
+    
+    var dictPage = [String: AnyObject]()
     
     //MARK: - VC LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        totalCount = Int(dictPage["total"] as! String)!
         
         tblSearchTrips.tableFooterView = UIView()
     }
@@ -25,6 +36,10 @@ class SearchTripListVC: UIViewController, UITableViewDelegate, UITableViewDataSo
     override func viewWillAppear(_ animated: Bool) {
         
         super.viewWillAppear(animated)
+        
+        pagingSpinner = CommonFile.shared.activityIndicatorView()
+        
+        tblSearchTrips.tableFooterView = pagingSpinner
         
         self.navigationView()
     }
@@ -149,6 +164,65 @@ class SearchTripListVC: UIViewController, UITableViewDelegate, UITableViewDataSo
         self.navigationController?.pushViewController(postTripVC, animated: true)
     }
     
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        
+        if arrMyTrips.count < totalCount && indexPath.row == (arrMyTrips.count-1) {
+            
+            self.getMoreTrips()
+        }
+    }
+    
+    
+    func getMoreTrips() -> Void {
+        
+        self.pagingSpinner.startAnimating()
+        
+        dictTripInfo["page"] = "\(pageNo)" as AnyObject
+        
+        TripsVM.shared.findTrips(dictInfo: dictTripInfo as [String : AnyObject], completionHandler: { (dictResponse) in
+            DispatchQueue.main.async {
+                
+                self.pagingSpinner.stopAnimating()
+                
+                print(dictResponse)
+                
+                if let status = dictResponse["status"] as? Bool, status == true {
+                    
+                    if let dictUser = dictResponse["data"] as? [String: AnyObject] {
+                        
+                        if let response = dictUser["response"] as? String, response == "success" {
+                            
+                            let arrSearchTrips = dictUser["trips"] as! [[String: AnyObject]]
+                            
+                            self.pageNo = self.pageNo + 1
+                                
+                            self.arrMyTrips.append(contentsOf: arrSearchTrips)
+                                
+                            self.tblSearchTrips.reloadData()
+                            
+                        }
+                        else  {
+                            
+                            let msgStr = dictResponse["message"] as! String
+                            
+                            UIAlertController.Alert(title: "", msg: msgStr, vc: self)
+                        }
+                    }
+                }
+                else {
+                    let msgStr = dictResponse["message"] as! String
+                    
+                    UIAlertController.Alert(title: "", msg: msgStr, vc: self)
+                }
+            }
+        }, failure: { (errorCode) in
+            DispatchQueue.main.async {
+                CommonFile.shared.hudDismiss()
+                print(errorCode)
+                UIAlertController.Alert(title: alertTitleError, msg: Something_went_wrong_please_try_again, vc: self)
+            }
+        })
+    }
     
     /*
      // MARK: - Navigation

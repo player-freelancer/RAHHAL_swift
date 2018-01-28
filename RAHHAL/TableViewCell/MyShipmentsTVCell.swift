@@ -27,6 +27,8 @@ class MyShipmentsTVCell: UITableViewCell {
     
     @IBOutlet weak var lblPrice: UILabel!
     
+    @IBOutlet var btnChat: UIButton!
+    
     
     override func awakeFromNib() {
         super.awakeFromNib()

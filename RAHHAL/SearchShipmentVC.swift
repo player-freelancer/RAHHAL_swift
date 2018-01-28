@@ -699,6 +699,13 @@ class SearchShipmentVC: UIViewController, UIPopoverPresentationControllerDelegat
                                 
                                 let searchShipmentListVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "SearchShipmentListVC") as! SearchShipmentListVC
                                 
+                                if let dictPage = dictUser["page"] as? [String: AnyObject] {
+                                    
+                                    searchShipmentListVC.dictPage = dictPage
+                                }
+                                
+                                searchShipmentListVC.dictShipmentInfo = self.dictShipmentInfo as [String : AnyObject]
+                                
                                 searchShipmentListVC.arrSearchShipment = arrSearchShipment
                                 
                                 self.navigationController?.pushViewController(searchShipmentListVC, animated: true)

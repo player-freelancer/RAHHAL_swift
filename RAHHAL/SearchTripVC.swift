@@ -716,6 +716,10 @@ class SearchTripVC: UIViewController, UIPopoverPresentationControllerDelegate, P
                                 
                                 searchTripListVC.arrMyTrips = arrSearchTrips
                                 
+                                searchTripListVC.dictPage = dictUser["page"] as! [String: AnyObject]
+                                
+                                searchTripListVC.dictTripInfo = self.dictTripInfo as [String : AnyObject]
+                                
                                 self.navigationController?.pushViewController(searchTripListVC, animated: true)
                             }
                         }

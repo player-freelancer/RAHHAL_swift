@@ -81,9 +81,9 @@ class ShipmentsVM: NSObject {
     }
     
     
-    func getMyShipments( completionHandler:@escaping (_ dict :NSDictionary) -> Void, failure:@escaping (_ error :String) -> Void) -> Void{
+    func getMyShipments(pageNo: Int, completionHandler:@escaping (_ dict :NSDictionary) -> Void, failure:@escaping (_ error :String) -> Void) -> Void{
         
-        WebService.sharedInstance.getMethedWithoutParams("shipment/myShipment", completionHandler: { (dictResponse) in
+        WebService.sharedInstance.getMethedWithoutParams("shipment/myShipment?page=\(pageNo)", completionHandler: { (dictResponse) in
             
             completionHandler(dictResponse)
         }, failure: { (errorCode) in

@@ -75,18 +75,15 @@ class RPNavigationVC: UINavigationController, ViewLeftMenuDelegates {
             print("index \(index)")
         case 4:
             print("index \(index)")
-            UserDefaults.standard.set(false, forKey: "kLoggedIn")
-            UserDefaults.standard.synchronize()
             
-            let myFavRoutesVC = storyboard.instantiateViewController(withIdentifier: "ViewController") as! ViewController
-            self.viewControllers = [myFavRoutesVC]
+            let messagesVC = storyboard.instantiateViewController(withIdentifier: "messagesVC") as! MessagesVC
+            self.viewControllers = [messagesVC]
         case 5:
             print("index \(index)")
             UserDefaults.standard.set(false, forKey: "kLoggedIn")
             UserDefaults.standard.synchronize()
             
             let myFavRoutesVC = storyboard.instantiateViewController(withIdentifier: "ViewController") as! ViewController
-            
             self.viewControllers = [myFavRoutesVC]
         case 1000:
             print("index Profile \(index)")

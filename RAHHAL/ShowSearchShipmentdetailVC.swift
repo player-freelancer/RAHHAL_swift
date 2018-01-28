@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class ShowSearchShipmentdetailVC: UIViewController, UIPopoverPresentationControllerDelegate, PopOverVCDelegates, UITextFieldDelegate, UITextViewDelegate, ViewDayNDatePickerDelegates, AddressViewControllerDelegate, SearchCityNameVCDelegate {
     
@@ -70,10 +71,31 @@ class ShowSearchShipmentdetailVC: UIViewController, UIPopoverPresentationControl
     var frameViewContainer = CGRect()
     
     
+    private var channelRefHandle: DatabaseHandle?
+    
+    private var channels: [Channel] = []
+    
+    private lazy var channelRef: DatabaseReference = Database.database().reference()
+    
+    private lazy var dbChatShipment = channelRef.child("ChatShipment")
+    
+    var isPressButtonChatReq = Bool()
+    
+    var otherUserId = String()
+    
+    var myUserId = String()
+    
+    
     // MARK: - VC LifeCycle
     override func viewDidLoad() {
         
         super.viewDidLoad()
+        
+        let dictUserInfo = UserDefaults.standard.object(forKey: "kUser") as! [String: AnyObject]
+        
+        myUserId = dictUserInfo["id"] as! String
+        
+        otherUserId = dictShipmentInfo["userId"]!
         
         viewContainer.isUserInteractionEnabled = false
         
@@ -119,6 +141,10 @@ class ShowSearchShipmentdetailVC: UIViewController, UIPopoverPresentationControl
         txtViewDescription.text = dictShipmentInfo["note"]
         
         self.navigationView()
+        
+        self.observeChannels()
+        
+        self.chatSetting()
     }
     
     
@@ -189,7 +215,7 @@ class ShowSearchShipmentdetailVC: UIViewController, UIPopoverPresentationControl
     
     // MARK: - UIButton Actions
     @IBAction func btnShipmentTypeAction(_ sender: UIButton) {
-        
+        /*
         endEditingNow = "yes"
         
         self.startPoint()
@@ -218,24 +244,24 @@ class ShowSearchShipmentdetailVC: UIViewController, UIPopoverPresentationControl
         
         popController.popoverPresentationController?.backgroundColor = UIColor.white
         
-        self.present(popController, animated: true, completion: nil)
+        self.present(popController, animated: true, completion: nil)*/
     }
     
     
     @IBAction func btnSelectCityAction(_ sender: UIButton) {
-        
+        /*
         let searchCityNameVC = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "searchCityNameVC") as! SearchCityNameVC
         
         searchCityNameVC.searchType = "selectCity"
         
         searchCityNameVC.delegate = self
         
-        self.navigationController?.pushViewController(searchCityNameVC, animated: true)
+        self.navigationController?.pushViewController(searchCityNameVC, animated: true)*/
     }
     
     
     @IBAction func btnFromLocationAction(_ sender: UIButton) {
-        
+        /*
         if let routeType = dictShipmentInfo["type"]?.Trim() {
             
             if routeType.isEmpty {
@@ -261,12 +287,12 @@ class ShowSearchShipmentdetailVC: UIViewController, UIPopoverPresentationControl
                 
                 self.navigationController?.pushViewController(searchCityNameVC, animated: true)
             }
-        }
+        }*/
     }
     
     
     @IBAction func btnToLocationAction(_ sender: UIButton) {
-        
+        /*
         if let routeType = dictShipmentInfo["type"]?.Trim() {
             
             if routeType.isEmpty {
@@ -292,42 +318,44 @@ class ShowSearchShipmentdetailVC: UIViewController, UIPopoverPresentationControl
                 
                 self.navigationController?.pushViewController(searchCityNameVC, animated: true)
             }
-        }
+        }*/
     }
     
     
     @IBAction func btnStartDateAction(_ sender: UIButton) {
-        
+        /*
         endEditingNow = "yes"
         
         self.startPoint()
         
         self.view.endEditing(true)
         
-        self.openViewDatePicker(dateType: "start")
+        self.openViewDatePicker(dateType: "start")*/
     }
     
     
     @IBAction func btnEndDateAction(_ sender: UIButton) {
-        
+        /*
         endEditingNow = "yes"
         
         self.startPoint()
         
         self.view.endEditing(true)
         
-        self.openViewDatePicker(dateType: "end")
+        self.openViewDatePicker(dateType: "end")*/
     }
     
     
     @IBAction func btnChatRequestAction(_ sender: UIButton) {
         
-        UIAlertController.Alert(title: "", msg: "Coming Soon", vc: self)
+//        UIAlertController.Alert(title: "", msg: "Coming Soon", vc: self)
+        
+        self.callChatVC()
     }
     
     
     func openViewDatePicker(dateType: String) -> Void {
-        
+        /*
         self.view.endEditing(true)
         
         if viewDayNDatePicker != nil {
@@ -367,13 +395,13 @@ class ShowSearchShipmentdetailVC: UIViewController, UIPopoverPresentationControl
         
         viewDayNDatePicker.delegates = self
         
-        self.view.addSubview(viewDayNDatePicker)
+        self.view.addSubview(viewDayNDatePicker)*/
     }
     
     
     //MARK:- ViewDayNDatePicker Dalegates
     func btnCancelActionDatePickerView(dateType: String) -> Void {
-        
+        /*
         if dateType == "start" {
             dictShipmentInfo["departure"] = ""
             btnStartDate.setTitle("Start Date", for: .normal)
@@ -385,7 +413,7 @@ class ShowSearchShipmentdetailVC: UIViewController, UIPopoverPresentationControl
             btnEndDate.setTitle("End Date", for: .normal)
         }
         
-        self.hideDatePickerView()
+        self.hideDatePickerView()*/
     }
     
     
@@ -399,7 +427,7 @@ class ShowSearchShipmentdetailVC: UIViewController, UIPopoverPresentationControl
     
     
     func btnDoneActionDatePickerView(strDate: String, strDateAndTime: String, dateType: String) -> Void {
-        
+        /*
         let dateFormatter = DateFormatter()
         
         dateFormatter.dateFormat = "yyyy-MM-d"
@@ -429,7 +457,7 @@ class ShowSearchShipmentdetailVC: UIViewController, UIPopoverPresentationControl
         else if dateType == "end" {
             dictShipmentInfo["arrival"] = strOrderDeliveryDate
             btnEndDate.setTitle(strOrderDeliveryDate, for: .normal)
-        }
+        }*/
     }
     
     
@@ -678,7 +706,6 @@ class ShowSearchShipmentdetailVC: UIViewController, UIPopoverPresentationControl
     
     
     // MARK: - Adjust VC With Animation
-    
     func startPoint() -> Void {
         
         let yAxiz =  Float((self.navigationController?.navigationBar.frame.size.height)!) + 20
@@ -702,5 +729,103 @@ class ShowSearchShipmentdetailVC: UIViewController, UIPopoverPresentationControl
         }
     }
     
+    
+    // MARK: Firebase related methods
+    func observeChannels() {
+        // We can use the observe method to listen for new
+        // channels being written to the Firebase DB
+        channelRefHandle = dbChatShipment.observe(.childAdded, with: { (snapshot) -> Void in
+            let channelData = snapshot.value as! Dictionary<String, AnyObject>
+            let id = snapshot.key
+            if let name = channelData["name"] as! String!, name.count > 0 {
+                let idPhone = channelData["name"] as! String
+                //                if self.isPressButtonChatReq == false {
+                
+                self.channels.append(Channel(id: id, name: name, panterId: self.otherUserId))
+                //                }
+                print(channelData)
+                print(self.channels)
+            } else {
+                print("Error! Could not decode channel data")
+            }
+        })
+    }
+    
+    
+    func chatSetting() -> Void {
+        
+        let shipmentId = dictShipmentInfo["id"] as! String
+        
+        let title = dictShipmentInfo["title"]!
+        
+        let participants = "shipment\(shipmentId)-\(myUserId)"
+        let participants1 = "shipment\(shipmentId)-\(otherUserId)"
+        
+        self.isPressButtonChatReq = true
+        
+        CommonFile.shared.hudShow(strText: "")
+        
+        FirebaseManager.sharedInstance.checkChannelAlreadyExist(keyWord: "shipment", keyWordId: shipmentId) { (status) in
+            
+            CommonFile.shared.hudDismiss()
+            
+            if status {
+                
+                print("Chat channel already exist.")
+                
+                //                self.getMyChannel()
+            }
+            else {
+                
+                let newChannelRef = self.dbChatShipment.childByAutoId()
+                
+                
+                let channelItem = [
+                    "name": "Deal\(participants)",
+                    "chatRequestBy":self.myUserId,
+                    "chatRequestTo":self.otherUserId,
+                    "shipmentId": shipmentId,
+                    "title": title,
+                    ] as [String : Any]
+                newChannelRef.setValue(channelItem)
+                
+                print(newChannelRef.key)
+                
+                //                self.channels.append(Channel(id: newChannelRef.key, name: "Deal\(participants)", idPhone: "Deal\(participants)"))
+                
+                //                self.callChatVC(name: "Deal\(participants)")
+            }
+        }
+        
+    }
+    
+    
+    func callChatVC() -> Void {
+        
+        let shipmentId = dictShipmentInfo["id"] as! String
+        let dictUserInfo = UserDefaults.standard.object(forKey: "kUser") as! [String: AnyObject]
+        
+        let myUserId = dictUserInfo["id"] as! String
+        let name = "Dealshipment\(shipmentId)-\(myUserId)"
+        
+        
+        let myChannel = channels.filter { (($0 ).name == name) }
+        
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        
+        let chatVC = storyboard.instantiateViewController(withIdentifier: "chatViewController") as! ChatViewController
+        
+        //        let chatViewController = ChatViewController(nibName: "ChatViewController", bundle: nil)
+        
+        chatVC.channelRef = channelRef.child(myChannel[0].id)
+        
+        chatVC.channel = myChannel[0]
+        
+        chatVC.chatType = "ChatShipment"
+        
+        chatVC.senderDisplayName = "Shipment"
+        
+        self.navigationController?.pushViewController(chatVC, animated: true)
+    }
 }
 

@@ -14,6 +14,15 @@ class SearchShipmentListVC: UIViewController, UITableViewDelegate, UITableViewDa
     
     var arrSearchShipment = [[String:AnyObject]]()
     
+    var pagingSpinner: UIActivityIndicatorView!
+    
+    var pageNo = 2
+    
+    var totalCount = 0
+    
+    var dictShipmentInfo = [String: AnyObject]()
+    
+    var dictPage = [String: AnyObject]()
     
     //MARK: - VC LifeCycle
     override func viewDidLoad() {
@@ -25,6 +34,12 @@ class SearchShipmentListVC: UIViewController, UITableViewDelegate, UITableViewDa
     override func viewWillAppear(_ animated: Bool) {
         
         super.viewWillAppear(animated)
+        
+        totalCount = Int(dictPage["total"] as! String)!
+        
+        pagingSpinner = CommonFile.shared.activityIndicatorView()
+        
+        tblSearchShipment.tableFooterView = pagingSpinner
         
         self.navigationView()
     }
@@ -143,6 +158,67 @@ class SearchShipmentListVC: UIViewController, UITableViewDelegate, UITableViewDa
         showSearchShipmentdetailVC.dictShipmentInfo = arrSearchShipment[indexPath.row] as! [String : String]
         
         self.navigationController?.pushViewController(showSearchShipmentdetailVC, animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        
+        if arrSearchShipment.count < totalCount && indexPath.row == (arrSearchShipment.count-1) {
+            
+            self.searchShipmentsAPI()
+        }
+    }
+    
+    
+    
+    func searchShipmentsAPI() -> Void {
+        
+        self.pagingSpinner.startAnimating()
+        
+        dictShipmentInfo["page"] = "\(pageNo)" as AnyObject
+        
+        ShipmentsVM.shared.findShipment(dictUserInfo: dictShipmentInfo as! [String : String], completionHandler: { (dictResponse) in
+            DispatchQueue.main.async {
+                
+                CommonFile.shared.hudDismiss()
+                
+                print(dictResponse)
+                
+                if let status = dictResponse["status"] as? Bool, status == true {
+                    
+                    if let dictUser = dictResponse["data"] as? [String: AnyObject] {
+                        
+                        if let response = dictUser["response"] as? String, response == "success" {
+                            
+                            let arrShipment = dictUser["shipments"] as! [[String: AnyObject]]
+                            
+                            self.pageNo = self.pageNo + 1
+                                
+                            self.arrSearchShipment.append(contentsOf: arrShipment)
+                            
+                            self.tblSearchShipment.reloadData()
+                            
+                        }
+                        else  {
+                            
+                            let msgStr = dictResponse["message"] as! String
+                            
+                            UIAlertController.Alert(title: "", msg: msgStr, vc: self)
+                        }
+                    }
+                }
+                else {
+                    let msgStr = dictResponse["message"] as! String
+                    
+                    UIAlertController.Alert(title: "", msg: msgStr, vc: self)
+                }
+            }
+        }, failure: { (errorCode) in
+            DispatchQueue.main.async {
+                CommonFile.shared.hudDismiss()
+                print(errorCode)
+                UIAlertController.Alert(title: alertTitleError, msg: Something_went_wrong_please_try_again, vc: self)
+            }
+        })
     }
     
 }

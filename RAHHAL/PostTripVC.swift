@@ -7,12 +7,15 @@
 //
 
 import UIKit
+import Firebase
 
 class PostTripVC: UIViewController, UIPopoverPresentationControllerDelegate, PopOverVCDelegates, UITextFieldDelegate, UITextViewDelegate, ViewDayNDatePickerDelegates, AddressViewControllerDelegate, SearchCityNameVCDelegate {
     
     @IBOutlet var svMain: UIScrollView!
     
     @IBOutlet var viewContainer: UIView!
+    
+    @IBOutlet weak var viewTitle: UIView!
     
     @IBOutlet var viewSelectCity: UIView!
     
@@ -31,6 +34,8 @@ class PostTripVC: UIViewController, UIPopoverPresentationControllerDelegate, Pop
     @IBOutlet var viewEndDate: UIView!
     
     @IBOutlet var viewDesc: UIView!
+    
+    @IBOutlet var txtTitle: UITextField!
     
     @IBOutlet var btnShipmentType: UIButton!
     
@@ -74,12 +79,29 @@ class PostTripVC: UIViewController, UIPopoverPresentationControllerDelegate, Pop
     
     var tripType = String()
     
+    private var channelRefHandle: DatabaseHandle?
+    
+    private var channels: [Channel] = []
+    
+    private lazy var channelRef: DatabaseReference = Database.database().reference()
+    
+    private lazy var dbChatTrip = channelRef.child("ChatTrips")
+    
+    var isPressButtonChatReq = Bool()
+    
+    var otherUserId = String()
+    
+    var myUserId = String()
     
     
     // MARK: - VC LifeCycle
     override func viewDidLoad() {
         
         super.viewDidLoad()
+        
+        let dictUserInfo = UserDefaults.standard.object(forKey: "kUser") as! [String: AnyObject]
+        
+        myUserId = dictUserInfo["id"] as! String
         
         if tripType == "update" {
             
@@ -93,6 +115,8 @@ class PostTripVC: UIViewController, UIPopoverPresentationControllerDelegate, Pop
         }
         
         if dictTripInfo.isEmpty {
+            
+            dictTripInfo["trip_title"] = ""
             
             if isOnDemandShipment {
                 
@@ -120,12 +144,18 @@ class PostTripVC: UIViewController, UIPopoverPresentationControllerDelegate, Pop
         else {
             
             
+            otherUserId = dictTripInfo["userId"] as! String
+            
+            
             viewShipmentType.isUserInteractionEnabled = false
             
             let startDate = TimeStatus.getDate(isApplyTimeZone: false, strDate: dictTripInfo["departure"]!, oldFormatter: "yyyy-MM-dd hh-mm-ss", newFormat: "yyyy-MM-dd")
 //            let endDate = TimeStatus.getDate(isApplyTimeZone: false, strDate: dictTripInfo["arrival"]!, oldFormatter: "yyyy-MM-dd hh-mm-ss", newFormat: "yyyy-MM-dd")
             
+            print(dictTripInfo)
+            
             var dictOldTrip = [String: String]()
+            dictOldTrip["trip_title"] = dictTripInfo["trip_title"]
             dictOldTrip["type"] = dictTripInfo["type"]
             dictOldTrip["from_location"] = dictTripInfo["from_location"]
             dictOldTrip["to_location"] = dictTripInfo["to_location"]
@@ -136,10 +166,26 @@ class PostTripVC: UIViewController, UIPopoverPresentationControllerDelegate, Pop
             dictOldTrip["note"] = dictTripInfo["note"]
             dictOldTrip["tripId"] = dictTripInfo["id"]
             
+            
+            let userId = dictTripInfo["userId"]
+            
             dictTripInfo.removeAll()
             
             dictTripInfo = dictOldTrip
             
+            if tripType == "search" {
+                
+                dictTripInfo["userId"] = userId
+                
+                
+                self.observeChannels()
+                
+                self.chatSetting()
+                
+            }
+            
+            txtTitle.text = dictTripInfo["trip_title"]
+            txtTitle.isUserInteractionEnabled = false
             btnShipmentType.setTitle(dictTripInfo["type"], for: .normal)
             txtSelectCity.text = dictTripInfo["city_name"]
             txtFrom.text = dictTripInfo["from_location"]
@@ -167,6 +213,15 @@ class PostTripVC: UIViewController, UIPopoverPresentationControllerDelegate, Pop
         super.viewDidAppear(animated)
         
         frameViewContainer = viewContainer.frame
+    }
+    
+    
+    deinit {
+        
+        if let refHandle = channelRefHandle {
+            
+            channelRef.removeObserver(withHandle: refHandle)
+        }
     }
     
     
@@ -652,24 +707,6 @@ class PostTripVC: UIViewController, UIPopoverPresentationControllerDelegate, Pop
             self.startPoint()
             return
         }
-        
-        //        if txtSelectCity == textField {
-        //
-        //        }
-        //        else if txtFrom == textField {
-        //
-        //        }
-        //        else if txtTo == textField {
-        //
-        //        }
-        //        else if txtWeight == textField {
-        //
-        //            txtPrice.becomeFirstResponder()
-        //        }
-        //        else if txtPrice == textField {
-        //
-        //            self.startPoint()
-        //        }
     }
     
     
@@ -679,23 +716,20 @@ class PostTripVC: UIViewController, UIPopoverPresentationControllerDelegate, Pop
         
         let updatedText = currentText.replacingCharacters(in: stringRange, with: string)
         
-        if txtWeight == textField {
+        if txtTitle == textField {
+            
+            dictTripInfo["trip_title"] = updatedText
+        }
+        else if txtWeight == textField {
             if updatedText.count < 4 {
-            dictTripInfo["weight"] = updatedText
+                dictTripInfo["weight"] = updatedText
             }
         }
         else if txtPrice == textField {
             if updatedText.count < 5 {
-            dictTripInfo["fees"] = updatedText
+                dictTripInfo["fees"] = updatedText
             }
         }
-        
-        //        if txtFrom == textField || txtTo == textField || txtSelectCity == textField {
-        //
-        //            NSObject.cancelPreviousPerformRequests(withTarget: self, selector: #selector(getHintsFromTextField), object: textField)
-        //
-        //            self.perform(#selector(getHintsFromTextField), with: textField, afterDelay: 0.5)
-        //        }
         
         if txtWeight == textField {
             
@@ -775,30 +809,26 @@ class PostTripVC: UIViewController, UIPopoverPresentationControllerDelegate, Pop
     
     func checkValidationAndPostShipment() -> Void {
         
-        //        let title = dictTripInfo["title"]
+        if tripType != "search" {
+        
+        let title = dictTripInfo["trip_title"]
         let type = dictTripInfo["type"]
         let city = dictTripInfo["city_name"]
         let from = dictTripInfo["from_location"]
         let to = dictTripInfo["to_location"]
         let weight = dictTripInfo["weight"]
-        let fees = dictTripInfo["fees"]
-        let startDate = dictTripInfo["departure"]
-//        let endDate = dictTripInfo["arrival"]
-        //        let pic = dictTripInfo["pictureIds"]
         
-        //        if (pic?.isEmpty)! {
-        //
-        //            dictTripInfo.removeValue(forKey: "pictureIds")
-        //        }
+        let startDate = dictTripInfo["departure"]
+
         
         let note = dictTripInfo["note"]
         
-        //        guard !(title?.Trim().isEmpty)! else {
-        //
-        //            UIAlertController.Alert(title: "", msg: "Title cannot be left blank.", vc: self)
-        //
-        //            return
-        //        }
+        guard !(title?.Trim().isEmpty)! else {
+
+            UIAlertController.Alert(title: "", msg: "Title cannot be left blank.", vc: self)
+
+            return
+        }
         
         if isOnDemandShipment {
             
@@ -837,82 +867,21 @@ class PostTripVC: UIViewController, UIPopoverPresentationControllerDelegate, Pop
             return
         }
         
-        //        guard !(fees?.Trim().isEmpty)! else {
-        //
-        //            UIAlertController.Alert(title: "", msg: "Currency cannot be left blank.", vc: self)
-        //            return
-        //        }
-        
         guard !(startDate?.Trim().isEmpty)! else {
             
             UIAlertController.Alert(title: "", msg: "Start date cannot be left blank.", vc: self)
             return
         }
         
-        //        guard !(endDate?.Trim().isEmpty)! else {
-        //
-        //            UIAlertController.Alert(title: "", msg: "End date cannot be left blank.", vc: self)
-        //            return
-        //        }
-        
         guard from?.Trim() != to?.Trim()  else {
             
             UIAlertController.Alert(title: "", msg: "From & To cannot match with each other.", vc: self)
             return
         }
-        
-        
-        
-        
-        
-        /*
-         if isOnDemandShipment {
-         
-         
-         let arrMySelectedCity = arrSelectCity.filter({ ($0 == city!) })
-         
-         if arrMySelectedCity.isEmpty {
-         
-         UIAlertController.Alert(title: "", msg: "Please fill valid City Name", vc: self)
-         return
-         }
-         //            else {
-         //
-         //                dictTripInfo["city_name"] = String(format: "%@ %@", city!, arrMySelectedCity[0]["country"] as! String )
-         //
-         //            }
-         }
-         else {
-         
-         let arrMySelectedToCity = arrToCity.filter({ ($0 == to!) })
-         
-         if arrMySelectedToCity.isEmpty {
-         
-         UIAlertController.Alert(title: "", msg: "Please fill valid To Address", vc: self)
-         return
-         }
-         //            else {
-         //
-         //                dictTripInfo["drop_location"] = String(format: "%@ %@", to!, arrMySelectedToCity[0]["country"] as! String)
-         //            }
-         
-         let arrMySelectedFromCity = arrFromCity.filter({ ($0 == from!) })
-         
-         if arrMySelectedFromCity.isEmpty {
-         
-         UIAlertController.Alert(title: "", msg: "Please fill valid From Address", vc: self)
-         return
-         }
-         //            else {
-         //                dictTripInfo["pickup_location"] = String(format: "%@ %@", from!, arrMySelectedFromCity[0]["country"] as! String )
-         //            }
-         }
-         */
+ 
         
         dictTripInfo["departure"] = String(format: "%@ 00:00:00", startDate!)
-        
-//        dictTripInfo["arrival"] = String(format: "%@ 00:00:00", endDate!)
-        
+        }
         
         print(dictTripInfo)
         
@@ -923,12 +892,115 @@ class PostTripVC: UIViewController, UIPopoverPresentationControllerDelegate, Pop
         else if tripType == "search" {
             
             //            self.createNewTrip()
-            UIAlertController.Alert(title: "", msg: "Coming soon", vc: self)
+//            UIAlertController.Alert(title: "", msg: "Coming soon", vc: self)
+            
+//            self.chatSetting()
+            
+            
+            
+            self.callChatVC()
         }
         else {
             
             self.createNewTrip()
         }
+    }
+    
+    
+    // MARK: Firebase related methods
+    func observeChannels() {
+        // We can use the observe method to listen for new
+        // channels being written to the Firebase DB
+        channelRefHandle = dbChatTrip.observe(.childAdded, with: { (snapshot) -> Void in
+            let channelData = snapshot.value as! Dictionary<String, AnyObject>
+            let id = snapshot.key
+            if let name = channelData["name"] as! String!, name.count > 0 {
+                let idPhone = channelData["name"] as! String
+//                if self.isPressButtonChatReq == false {
+                
+                    self.channels.append(Channel(id: id, name: name, panterId: self.otherUserId))
+//                }
+                print(channelData)
+                print(self.channels)
+            } else {
+                print("Error! Could not decode channel data")
+            }
+        })
+    }
+    
+    
+    func chatSetting() -> Void {
+        
+        let tripId = dictTripInfo["tripId"] as! String
+        
+        let title = dictTripInfo["trip_title"]!
+        
+        let participants = "trip\(tripId)-\(myUserId)"
+        let participants1 = "trip\(tripId)-\(otherUserId)"
+        
+        self.isPressButtonChatReq = true
+        
+        CommonFile.shared.hudShow(strText: "")
+        
+        FirebaseManager.sharedInstance.checkChannelAlreadyExist(keyWord: "trip", keyWordId: tripId) { (status) in
+            
+            CommonFile.shared.hudDismiss()
+            
+            if status {
+                
+                print("Chat channel already exist.")
+            }
+            else {
+                
+                let newChannelRef = self.dbChatTrip.childByAutoId()
+                
+                
+                let channelItem = [
+                    "name": "Deal\(participants)",
+                    "chatRequestBy":self.myUserId,
+                    "chatRequestTo":self.otherUserId,
+                    "tripId": tripId,
+                    "title": title,
+                    ] as [String : Any]
+                newChannelRef.setValue(channelItem)
+                
+                print(newChannelRef.key)
+                
+//                self.channels.append(Channel(id: newChannelRef.key, name: "Deal\(participants)", idPhone: "Deal\(participants)"))
+                
+//                self.callChatVC(name: "Deal\(participants)")
+            }
+        }
+    
+    }
+    
+    
+    func callChatVC() -> Void {
+        
+        let tripId = dictTripInfo["tripId"] as! String
+        let dictUserInfo = UserDefaults.standard.object(forKey: "kUser") as! [String: AnyObject]
+        
+        let myUserId = dictUserInfo["id"] as! String
+        let name = "Dealtrip\(tripId)-\(myUserId)"
+        
+        
+        let myChannel = channels.filter { (($0 ).name == name) }
+        
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        
+        let chatVC = storyboard.instantiateViewController(withIdentifier: "chatViewController") as! ChatViewController
+        
+//        let chatViewController = ChatViewController(nibName: "ChatViewController", bundle: nil)
+        
+        chatVC.channelRef = channelRef.child(myChannel[0].id)
+        
+        chatVC.channel = myChannel[0]
+        
+        chatVC.chatType = "ChatTrips"
+        
+        chatVC.senderDisplayName = "kk"
+        
+        self.navigationController?.pushViewController(chatVC, animated: true)
     }
     
     

@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import Firebase
 
 class MyTripsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPopoverPresentationControllerDelegate {
 
@@ -22,10 +23,27 @@ class MyTripsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
     
     var arrMyTrips = [[String:AnyObject]]()
     
+    var myUserId = String()
+    
+    var pagingSpinner: UIActivityIndicatorView!
+    
+    var pageNo = 1
+    
+    var totalCount = 0
+    
+    private var channels: [Channel] = []
+    
+    private lazy var channelRef: DatabaseReference = Database.database().reference()
+//    private lazy var DBTable = DBRef.child("TripChat")
+    
     
     //MARK: - VC LifeCycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let dictUserInfo = UserDefaults.standard.object(forKey: "kUser") as! [String: AnyObject]
+        
+        myUserId = dictUserInfo["id"] as! String
         
         let plaveholderView = Bundle.main.loadNibNamed("ViewPlaceHolder", owner: nil, options: nil)?[0] as! ViewPlaceHolder
         
@@ -33,8 +51,11 @@ class MyTripsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
         
         viewNoTrip.addSubview(plaveholderView)
         
-        tblMyShipments.tableFooterView = UIView()
+        pagingSpinner = CommonFile.shared.activityIndicatorView()
+        
+        tblMyShipments.tableFooterView = pagingSpinner
     }
+    
     
     override func viewWillAppear(_ animated: Bool) {
         
@@ -42,7 +63,7 @@ class MyTripsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
         
         self.navigationView()
         
-        self.getMyTripsAPI()
+        self.getMyTripsAPI(isCallFirstTime: true)
     }
     
     
@@ -157,6 +178,42 @@ class MyTripsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
         return UIModalPresentationStyle.none
     }
     
+    @objc func btnChatTripAction(sender: UIButton) -> Void {
+    
+        let point = sender.convert(CGPoint.zero, to: tblMyShipments)
+        
+        let indexPath = tblMyShipments.indexPathForRow(at: point)
+        
+        let dictChatInfo = arrMyTrips[(indexPath?.row)!]
+        
+        if let chatId = dictChatInfo["chatId"] as? String {
+            
+            let name = dictChatInfo["name"] as! String
+            
+            let patnerId = dictChatInfo["patnerId"] as! String
+            
+            
+            self.channels.append(Channel(id: chatId, name: name, panterId: patnerId))
+            
+            let storyboard = UIStoryboard(name: "Main", bundle: nil)
+            
+            let chatVC = storyboard.instantiateViewController(withIdentifier: "chatViewController") as! ChatViewController
+            
+            //        let chatViewController = ChatViewController(nibName: "ChatViewController", bundle: nil)
+            
+            chatVC.channelRef = channelRef.child(channels[0].id)
+            
+            chatVC.channel = channels[0]
+            
+            chatVC.senderDisplayName = "kk"
+            
+            chatVC.chatType = "ChatTrips"
+            
+            self.navigationController?.pushViewController(chatVC, animated: true)
+        }
+    }
+    
+    
     @objc func btnDeleteTriptAction(sender: UIButton) -> Void {
         
         let point = sender.convert(CGPoint.zero, to: tblMyShipments)
@@ -199,6 +256,15 @@ class MyTripsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
         
         cell.showMyTripData(dictShipment: arrMyTrips[indexPath.row])
         
+        cell.btnChat.backgroundColor = UIColor.clear
+        
+        if let statusMsgUnread = arrMyTrips[indexPath.row]["unread"] as? String, statusMsgUnread == "1" {
+            
+            cell.btnChat.backgroundColor = UIColor.green
+        }
+        
+        cell.btnChat.addTarget(self, action: #selector(btnChatTripAction(sender:)), for: .touchUpInside)
+        
         cell.btnCross.addTarget(self, action: #selector(btnDeleteTriptAction(sender:)), for: .touchUpInside)
         
         return cell
@@ -222,26 +288,86 @@ class MyTripsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
     }
     
     
-    func getMyTripsAPI() -> Void {
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         
-        CommonFile.shared.hudShow(strText: "")
+        if arrMyTrips.count < totalCount && indexPath.row == (arrMyTrips.count-1) {
+            
+            self.getMyTripsAPI(isCallFirstTime: false)
+        }
+    }
+    
+    /*
+    func getFireBaseTrips() -> Void {
         
-        arrMyTrips.removeAll()
+        FirebaseManager.sharedInstance.getMyAllTrips { (arrTrip) in
+            
+            print(arrTrip)
+            
+            if !arrTrip.isEmpty {
+                
+                for dictTripInfo in arrTrip {
+                    
+                    let isPresent = arrTrip.contains(where: { ($0["id"] as! String == dictTripInfo["tripId"] as! String) })
+                    
+                    if isPresent {
+                        
+                    }
+                }
+            }
+            else {
+                
+                for dict in self.arrMyTrips {
+                    
+                    FirebaseManager.sharedInstance.createNewTripChat(dictTripInfo: dict)
+                }
+            }
+            
+        }
+    }*/
+    
+    
+    func getMyTripsAPI(isCallFirstTime: Bool) -> Void {
         
-        TripsVM.shared.getMyTrips(pageNumber: 1, completionHandler: { (dictResponse) in
+        if isCallFirstTime {
+            
+            CommonFile.shared.hudShow(strText: "")
+            
+            arrMyTrips.removeAll()
+        }
+        else {
+            
+            self.pagingSpinner.startAnimating()
+        }
+        
+        
+        TripsVM.shared.getMyTrips(pageNumber: pageNo, completionHandler: { (dictResponse) in
             
             DispatchQueue.main.async {
                 
                 print(dictResponse)
-                CommonFile.shared.hudDismiss()
                 
                 if let status = dictResponse["status"] as? Bool, status == true {
                     
+                    self.pageNo = self.pageNo + 1
+                    
                     if let data = dictResponse["data"] as? [String: AnyObject] {
+                        
+                        if let dictPage = data["page"] as? [String: AnyObject] {
+                            
+                            self.totalCount = Int(dictPage["total"] as! String)!
+                        }
                         
                         if let response = data["response"] as? String, response == "success" {
                             
-                            self.arrMyTrips = data["trips"] as! [[String: AnyObject]]
+                            let arrTrip = data["trips"] as! [[String: AnyObject]]
+                            
+                            if isCallFirstTime {
+                                self.arrMyTrips = arrTrip
+                            }
+                            else {
+                                self.arrMyTrips.append(contentsOf: arrTrip)
+                            }
+                            
                             
                             if self.arrMyTrips.isEmpty {
                                 
@@ -256,25 +382,75 @@ class MyTripsVC: UIViewController, UITableViewDelegate, UITableViewDataSource, U
                                 self.tblMyShipments.isHidden = false
                             }
                             
-                            self.tblMyShipments.reloadData()
                         }
                     }
+                    
+                    self.getMyTripsChat()
                 }
                 else {
                     
                     let errorMsg = dictResponse["message"] as? String ?? Something_went_wrong_please_try_again
                     
                     UIAlertController.Alert(title: alertTitleError, msg: errorMsg, vc: self)
+                    CommonFile.shared.hudDismiss()
+                    
+                    self.pagingSpinner.stopAnimating()
                 }
             }
         }, failure: { (errorCode) in
             
             DispatchQueue.main.async {
                 CommonFile.shared.hudDismiss()
+                
+                self.pagingSpinner.stopAnimating()
                 print(errorCode)
                 UIAlertController.Alert(title: alertTitleError, msg: Something_went_wrong_please_try_again, vc: self)
             }
         })
+    }
+    
+    
+    func getMyTripsChat() -> Void {
+        
+        FirebaseManager.sharedInstance.getMyAllTrips(key: "chatRequestTo") { (arrMyFirebaseChat) in
+            
+            DispatchQueue.main.async {
+                
+                if !arrMyFirebaseChat.isEmpty {
+                    
+                    for dictChatInfo in arrMyFirebaseChat {
+                        
+                        var tripName = dictChatInfo["name"] as! String
+                        tripName = tripName.replacingOccurrences(of: "Dealtrip", with: "")
+                        let arr = tripName.split(separator: "-")
+                        
+                        if self.arrMyTrips.contains(where: { ($0["id"] as! String == arr[0]) }){
+                            
+                            if let index = self.arrMyTrips.index(where: { ($0["id"] as! String == arr[0]) }) as? Int {
+                                
+                                var dictMyTrip = self.arrMyTrips[index]
+                                
+                                dictMyTrip["chatId"] = dictChatInfo["chatId"] as AnyObject
+                                
+                                dictMyTrip["name"] = dictChatInfo["name"] as AnyObject
+                                
+                                dictMyTrip["patnerId"] = arr[1] as AnyObject
+                                
+                                dictMyTrip["unread"] = dictChatInfo["unread\(self.myUserId)"]
+                                
+                                self.arrMyTrips[index] = dictMyTrip
+                            }
+                        }
+                    }
+                }
+                
+                self.tblMyShipments.reloadData()
+                
+                CommonFile.shared.hudDismiss()
+                
+                self.pagingSpinner.stopAnimating()
+            }
+        }
     }
     
     
